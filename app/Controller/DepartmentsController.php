@@ -140,6 +140,7 @@ class DepartmentsController extends AppController
             throw new MethodNotAllowedException();
         }
         
+        // discovery department
         $id = $id ? $id : (isset($this->request->params['named']['id']) ? $this->request->params['named']['id'] : 0);
         
         // validate department id
