@@ -8,7 +8,8 @@
 
 App::uses('AppController', 'Controller');
 
-class DepartmentsController extends AppController {
+class DepartmentsController extends AppController 
+{
 
     public $components = array('Paginator');
 
@@ -36,7 +37,6 @@ class DepartmentsController extends AppController {
      */
     public function index() {
         $this->Paginator->settings = $this->paginate;
-        
         $departments = $this->Paginator->paginate('Department');
         $this->set('departments', $departments);
     }
@@ -48,6 +48,10 @@ class DepartmentsController extends AppController {
      * @throws NotFoundException
      */
     public function view($id = null) {
+        
+        // discovery department
+        $id = $id ? $id : (isset($this->request->params['named']['id']) ? $this->request->params['named']['id'] : 0);
+        
         // validate department id
         if (!$id) {
             throw new NotFoundException(__('Department not found'));
@@ -90,6 +94,10 @@ class DepartmentsController extends AppController {
      * @throws NotFoundException
      */
     public function edit($id = null) {
+        
+        // discovery department
+        $id = $id ? $id : (isset($this->request->params['named']['id']) ? $this->request->params['named']['id'] : 0);
+        
         // validate department id
         if (!$id) {
             throw new NotFoundException(__('Department not found'));
@@ -126,6 +134,14 @@ class DepartmentsController extends AppController {
      * @throws NotFoundException
      */
     public function delete($id = null) {
+        
+        # throw exception if method is get
+        if($this->request->is('get')) {
+            throw new MethodNotAllowedException();
+        }
+        
+        $id = $id ? $id : (isset($this->request->params['named']['id']) ? $this->request->params['named']['id'] : 0);
+        
         // validate department id
         if (!$id) {
             throw new NotFoundException(__('Department not found'));
@@ -148,6 +164,7 @@ class DepartmentsController extends AppController {
             );
         }
 
+        // redirect to index
         return $this->redirect(array('action' => 'index'));
     }
 }

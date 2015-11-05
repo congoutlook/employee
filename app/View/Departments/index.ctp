@@ -12,7 +12,7 @@
             <?php
             echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-plus"></i> %s', __('Add new')),
-                '/departments/add',
+                array('controller' => 'departments', 'action' => 'add'),
                 array('class' => 'btn btn-default', 'escape' => false)
             );
             ?>
@@ -41,23 +41,21 @@
                 <?php
                 echo $this->Html->link(
                     sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),
-                    '/departments/edit/' . $item['Department']['id'],
+                    array('controller' => 'departments', 'action' => 'edit', 'id' => $item['Department']['id']),
                     array('escape' => false)
                 );
                 ?>
                 &nbsp;&nbsp;
                 <?php
-                echo $this->Html->link(
-                    sprintf('<i class="glyphicon glyphicon-remove"></i> %s', __('Remove')),
-                    '/departments/delete/' . $item['Department']['id'],
-                    array('escape' => false, 'onclick' => 'return app.confirmActionDelete(\'Department: '.$item['Department']['name'].'\')')
-                );
+                echo $this->Form->postLink(sprintf('<i class="glyphicon glyphicon-remove"></i> %s', __('Remove')), 
+                    array('action' => 'delete', $item['Department']['id']),
+                    array('class'=>'', 'escape' => false, 'confirm' => 'Are you sure?'));
                 ?>
                 &nbsp;&nbsp;
                 <?php
                 echo $this->Html->link(
                     sprintf('<i class="glyphicon glyphicon-eye-open"></i> %s', __('View')),
-                    '/departments/view/' . $item['Department']['id'],
+                    array('controller' => 'departments', 'action' => 'view', 'id' => $item['Department']['id']),
                     array('escape' => false)
                 );
                 ?>
@@ -67,15 +65,9 @@
         <tfoot>
             <tr>
                 <td colspan="5">
-                    <ul class="pagination pull-right">
-                    <?php
-                        echo $this->Paginator->first('&laquo;', array('tag' => 'li', 'title' => __('First page'), 'escape' => false));
-                        echo $this->Paginator->prev('&lsaquo;', array('tag' => 'li',  'title' => __('Previous page'), 'disabledTag' => 'span', 'escape' => false), null, array('tag' => 'li', 'disabledTag' => 'span', 'escape' => false, 'class' => 'disabled'));
-                        echo $this->Paginator->numbers(array('separator' => false, 'tag' => 'li', 'currentTag' => 'span', 'currentClass' => 'active'));
-                        echo $this->Paginator->next('&rsaquo;', array('tag' => 'li', 'disabledTag' => 'span', 'title' => __('Next page'), 'escape' => false), null, array('tag' => 'li', 'disabledTag' => 'span', 'escape' => false, 'class' => 'disabled'));
-                        echo $this->Paginator->last('&raquo;', array('tag' => 'li', 'title' => __('First page'), 'escape' => false));
-                    ?>
-                    </ul>
+                    <?php if(isset($this->params['paging']['Department']['pageCount']) && $this->params['paging']['Department']['pageCount'] > 1) : ?>
+                        <?php echo $this->element('pagination') ?>
+                    <?php endif; ?>
                 </td>
             </tr>
         </tfoot>

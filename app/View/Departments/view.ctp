@@ -12,7 +12,7 @@
         <div id="toolbars" class="pull-right">
             <?php echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-backward"></i> %s', __('Close')),
-                '/departments/index',
+                array('action' => 'index'),
                 array('class' => 'btn btn-default', 'escape' => false)
             );
             ?>
@@ -33,7 +33,7 @@
         <div class="panel-footer">
             <?php echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-backward"></i> %s', __('Close')),
-                '/departments/index',
+                array('action' => 'index'),
                 array('class' => 'btn btn-default', 'escape' => false)
             );
             ?>

@@ -37,15 +37,4 @@ class Department extends AppModel {
             )
         )
     );
-    
-    /**
-    * Called before save operation, after validation.
-    *
-    * @param array $options Options passed from Model::save().
-    * @return bool True if the operation should continue
-    */
-    public function beforeSave($options = array()) {
-        
-        return true;
-    }
 }
