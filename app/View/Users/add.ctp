@@ -19,8 +19,7 @@
         </div>
     </div>
     
-    <div class="bs-example">
-        
+    <div class="bs-example">        
         <?php echo $this->Form->create('User', array(
             'inputDefaults' => array(
                 'class' => 'form-control',

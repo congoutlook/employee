@@ -1,6 +1,6 @@
 <?php
 /* 
- * Layout add user
+ * Layout change pass user
  * @package         app.View.Users
  * @author          Nguyen Van Cong
  */
