@@ -9,12 +9,13 @@
 App::uses('AppController', 'Controller');
 App::uses('CakeEmail', 'Network/Email');
 
-class UsersController extends AppController {
+class UsersController extends AppController 
+{
 
     public $components = array('Paginator', 'Session');
 
     public $paginate = array(
-        'limit' => 25,
+        'limit' => 5,
         'order' => array(
             'User.username' => 'asc'
         )
@@ -89,13 +90,18 @@ class UsersController extends AppController {
                 
                 # send mail
                 $subject = '[Employee]-Your pass has been changed successful';
-                $content = 'New Password: ' . $this->request->data['User']['password'];
                 
                 $Email = new CakeEmail('smtp');
+                $Email->template('users_change_pass');
+                $Email->viewVars(array(
+                    'user' => $resetUser['username'], 
+                    'password' => $this->request->data['User']['password']
+                ));
+                $Email->emailFormat(CakeEmail::MESSAGE_HTML);
                 $Email->from(array('admin@employee.com' => 'Employee'));
                 $Email->to($resetUser['email']);
                 $Email->subject($subject);
-                $Email->send($content);
+                $Email->send();
                 
                 $this->Flash->success(__('Your password has been changed.'));
                 return $this->redirect(array('action' => 'index'));
@@ -106,8 +112,10 @@ class UsersController extends AppController {
         
         // reset field password if this user do not want to change current pass
         if (!$this->request->data) {
-            $user['User']['password'] = '';
-            $this->request->data = $user;
+            if (isset($resetUser)) {
+                unset($resetUser['User']['password']);
+                $this->request->data = $resetUser;
+            }
         }
     }
     
@@ -116,7 +124,8 @@ class UsersController extends AppController {
      * @return void
      */
     public function index() {
-        $this->set('users', $this->User->find('all'));
+        $this->Paginator->settings = $this->paginate;
+        $this->set('users', $this->Paginator->paginate('User'));
     }
     
     /**
@@ -130,14 +139,18 @@ class UsersController extends AppController {
                 
                 # send mail
                 $subject = '[Employee]-Your account has been registed successful';
-                $content = 'Username: ' . $this->request->data['User']['username']
-                    . '. Password: ' . $this->request->data['User']['password'];
                 
                 $Email = new CakeEmail('smtp');
+                $Email->template('users_register');
+                $Email->viewVars(array(
+                    'user' => $this->request->data['User']['username'], 
+                    'password' => $this->request->data['User']['password']
+                ));
+                $Email->emailFormat(CakeEmail::MESSAGE_HTML);
                 $Email->from(array('admin@employee.com' => 'Employee'));
                 $Email->to($this->request->data['User']['email']);
                 $Email->subject($subject);
-                $Email->send($content);
+                $Email->send();
         
                 // redirect to page index
                 return $this->redirect(array('action' => 'index'));
@@ -155,6 +168,10 @@ class UsersController extends AppController {
      * @throws NotFoundException
      */
     public function edit($id = null) {
+        
+        // discovery department
+        $id = $id ? $id : (isset($this->request->params['named']['id']) ? $this->request->params['named']['id'] : 0);
+        
         // validate user id
         if (!$id) {
             throw new NotFoundException(__('User not found'));
@@ -192,7 +209,7 @@ class UsersController extends AppController {
         
         // reset field password when the from is disapeared
         if (!$this->request->data) {
-            $user['User']['password'] = '';
+            unset($user['User']['password']);
             $this->request->data = $user;
         }
     }
@@ -204,6 +221,15 @@ class UsersController extends AppController {
      * @throws NotFoundException
      */
     public function delete($id = null) {
+        
+        # throw exception if method is get
+        if($this->request->is('get')) {
+            throw new MethodNotAllowedException();
+        }
+        
+        // discovery department
+        $id = $id ? $id : (isset($this->request->params['named']['id']) ? $this->request->params['named']['id'] : 0);
+        
         // validate user id
         if (!$id) {
             throw new NotFoundException(__('User not found'));
@@ -232,6 +258,7 @@ class UsersController extends AppController {
             );
         }
 
+        // redirect to index
         return $this->redirect(array('action' => 'index'));
     }
 }

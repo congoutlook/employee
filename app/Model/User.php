@@ -9,8 +9,8 @@
 App::uses('AppModel', 'Model');
 App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 
-class User extends AppModel {
-
+class User extends AppModel 
+{
     public $validate = array(
         'username' => array(
             'alphaNumeric' => array(
@@ -97,4 +97,3 @@ class User extends AppModel {
         return true;
     }
 }
-?>

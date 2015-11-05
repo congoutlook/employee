@@ -12,7 +12,7 @@
         <div id="toolbars" class="pull-right">
             <?php echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-backward"></i> %s', __('Close')),
-                '/users/index',
+                array('action' => 'index'),
                 array('class' => 'btn btn-default', 'escape' => false)
             );
             ?>
