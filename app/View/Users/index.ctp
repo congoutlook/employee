@@ -5,8 +5,7 @@
  * @author          Nguyen Van Cong
  */
 ?>
-<div class="container">
-    
+<div class="container">    
     <div class="row page-header">
         <h1 class="pull-left"><?php echo __('Users manager') ?></h1>   
         <div id="toolbars" class="pull-right">
@@ -45,7 +44,7 @@
                 echo $this->Html->link(
                     sprintf('<i class="glyphicon glyphicon-remove"></i> %s', __('Remove')),
                     '/users/delete/' . $user['User']['id'],
-                    array('escape' => false)
+                    array('escape' => false, 'onclick' => 'return app.confirmActionDelete(\'User: '.$user['User']['username'].'\')')
                 );
                 ?>
             </td>

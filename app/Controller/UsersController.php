@@ -1,34 +1,14 @@
 <?php
 /**
- * Static content controller.
- *
- * This file will render views from views/pages/
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.Controller
- * @since         CakePHP(tm) v 0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * Users Controller
+ * 
+ * @package         app.Controller
+ * @author          Nguyen Van Cong
  */
 
 App::uses('AppController', 'Controller');
 App::uses('CakeEmail', 'Network/Email');
 
-/**
- * Static content controller
- *
- * Override this controller by placing a copy in controllers directory of an application
- *
- * @package       app.Controller
- * @link http://book.cakephp.org/2.0/en/controllers/pages-controller.html
- */
 class UsersController extends AppController {
 
     public $components = array('Paginator', 'Session');
@@ -40,9 +20,13 @@ class UsersController extends AppController {
         )
     );
     
+    /**
+     * Hook before filter
+     * @return void 
+     */
     public function beforeFilter() {
         parent::beforeFilter();
-        // Allow users to register and logout.
+        // Deny users in index page. Allow users to login and logout.
         $this->Auth->deny('index');
         $this->Auth->allow('login', 'logout');
     }
@@ -60,7 +44,7 @@ class UsersController extends AppController {
     }
     
     /**
-     * action logout
+     * Action logout
      * @return void
      */
     public function logout() {
@@ -74,6 +58,7 @@ class UsersController extends AppController {
     
     /**
      * action change pass
+     * @return void
      */
     public function change_pass() {
         // check user
@@ -126,6 +111,10 @@ class UsersController extends AppController {
         }
     }
     
+    /**
+     * Show all user
+     * @return void
+     */
     public function index() {
         $this->set('users', $this->User->find('all'));
     }
@@ -134,15 +123,14 @@ class UsersController extends AppController {
      * Add a new user
      */
     public function add() {
-        if ($this->request->is('post')) {
-            
+        if ($this->request->is('post')) {            
             $this->User->create();
             if ($this->User->save($this->request->data)) {
-                $this->Flash->success(__('The user has been saved'));
+                $this->Flash->success(__('The user has been created'));
                 
                 # send mail
                 $subject = '[Employee]-Your account has been registed successful';
-                'Username: ' . $this->request->data['User']['username']
+                $content = 'Username: ' . $this->request->data['User']['username']
                     . '. Password: ' . $this->request->data['User']['password'];
                 
                 $Email = new CakeEmail('smtp');
@@ -162,13 +150,17 @@ class UsersController extends AppController {
     
     /**
      * Edit a user
+     * @param int $id
+     * @return void
+     * @throws NotFoundException
      */
     public function edit($id = null) {
+        // validate user id
         if (!$id) {
             throw new NotFoundException(__('User not found'));
         }
 
-        // find user
+        // find user from user id
         $user = $this->User->findById($id);
         if (!$user) {
             throw new NotFoundException(__('User not found'));
@@ -190,6 +182,7 @@ class UsersController extends AppController {
                 unset($this->request->data['User']['password']);
             }
             
+            # execute. return page index if success. hold form state if falied 
             if ($this->User->save($this->request->data)) {
                 $this->Flash->success(__('Your user has been updated.'));
                 return $this->redirect(array('action' => 'index'));
@@ -197,21 +190,27 @@ class UsersController extends AppController {
             $this->Flash->error(__('Unable to update your user.'));
         }
         
-        // reset field password if this user do not want to change current pass
+        // reset field password when the from is disapeared
         if (!$this->request->data) {
             $user['User']['password'] = '';
             $this->request->data = $user;
         }
     }
     
+    /**
+     * Delete a user
+     * @param int $id
+     * @return void
+     * @throws NotFoundException
+     */
     public function delete($id = null) {
+        // validate user id
         if (!$id) {
             throw new NotFoundException(__('User not found'));
         }
 
-        // find user
+        // find user from user id
         $user = $this->User->findById($id);
-        
         if (!$user) {
             throw new NotFoundException(__('User not found'));
         }
@@ -222,6 +221,7 @@ class UsersController extends AppController {
             return $this->redirect(array('action' => 'index'));
         }
 
+        // execute delete
         if ($this->User->delete($id)) {
             $this->Flash->success(
                 __('The post with name: %s has been deleted.', h($user['User']['username']))

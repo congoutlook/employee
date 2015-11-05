@@ -1,5 +1,10 @@
 <?php
-// app/Model/User.php
+/**
+ * User Model
+ * 
+ * @package         app.Model
+ * @author          Nguyen Van Cong
+ */
 
 App::uses('AppModel', 'Model');
 App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
@@ -48,6 +53,12 @@ class User extends AppModel {
         )
     );
     
+    /**
+     * Customize validation rule matchPasswords
+     * @param array $field
+     * @param array $data
+     * @return boolean
+     */
     public function matchPasswords($field = null, $data = null) {
         
         if (isset($this->data['User']['password']) && 
@@ -62,6 +73,12 @@ class User extends AppModel {
         return false;
     }
     
+    /**
+    * Called before save operation, after validation.
+    *
+    * @param array $options Options passed from Model::save().
+    * @return bool True if the operation should continue
+    */
     public function beforeSave($options = array()) {
         
         if (isset($this->data[$this->alias]['password2'])) {
@@ -79,6 +96,5 @@ class User extends AppModel {
         
         return true;
     }
-
 }
 ?>

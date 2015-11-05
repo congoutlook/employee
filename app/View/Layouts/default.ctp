@@ -41,6 +41,9 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
     echo $this->Html->css('/dist/css/bootstrap-theme.min');
     echo $this->Html->css('/assets/css/docs.min.css');
     echo $this->Html->css('styles');
+    echo $this->Html->script('https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js');
+    echo $this->Html->script('/dist/js/bootstrap.min.js');
+    echo $this->Html->script('app.js');
     echo $this->fetch('css');
     echo $this->fetch('script');
     ?>
@@ -112,9 +115,5 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
             
         </div>
     </div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <?php echo $this->Html->script('/dist/js/bootstrap.min.js'); ?>
 </body>
 </html>
