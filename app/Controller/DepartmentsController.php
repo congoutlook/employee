@@ -1,75 +1,153 @@
 <?php
 /**
- * Static content controller.
- *
- * This file will render views from views/pages/
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.Controller
- * @since         CakePHP(tm) v 0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * Departments Controller
+ * 
+ * @package         app.Controller
+ * @author          Nguyen Van Cong
  */
 
 App::uses('AppController', 'Controller');
 
-/**
- * Static content controller
- *
- * Override this controller by placing a copy in controllers directory of an application
- *
- * @package       app.Controller
- * @link http://book.cakephp.org/2.0/en/controllers/pages-controller.html
- */
 class DepartmentsController extends AppController {
 
+    public $components = array('Paginator');
+
+    public $paginate = array(
+        'limit' => 5,
+        'order' => array(
+            'Departments.id' => 'asc',
+            'Departments.name' => 'asc'
+        )
+    );
+    
+    /**
+     * Hook before filter
+     * @return void 
+     */
     public function beforeFilter() {
         parent::beforeFilter();
-        // Allow users to register and logout.
-        $this->Auth->allow('index', 'view');
+        // Allow user access to page index, view
+        $this->Auth->allow('view');
     }
     
     /**
-     * Displays a view
-     *
+     * Show all departments
      * @return void
      */
     public function index() {
+        $this->Paginator->settings = $this->paginate;
         
+        $departments = $this->Paginator->paginate('Department');
+        $this->set('departments', $departments);
     }
     
     /**
-     * Add a new user
+     * View detail a department
+     * @param int $id
+     * @return void
+     * @throws NotFoundException
+     */
+    public function view($id = null) {
+        // validate department id
+        if (!$id) {
+            throw new NotFoundException(__('Department not found'));
+        }
+
+        // find department from department id
+        $department = $this->Department->findById($id);
+        if (!$department) {
+            throw new NotFoundException(__('Department not found'));
+        }
+        
+        // show form
+        if (!$this->request->data) {
+            $this->request->data = $department;
+        }
+    }
+    
+    /**
+     * Add a new department
      */
     public function add() {
-        
+        if ($this->request->is('post')) {
+            $this->Department->create();
+            if ($this->Department->save($this->request->data)) {
+                $this->Flash->success(__('The department has been created'));
+                
+                // redirect to page index
+                return $this->redirect(array('action' => 'index'));
+            }
+            $this->Flash->error(
+                __('The department could not be saved. Please, try again.')
+            );
+        }
     }
     
     /**
-     * View profile
+     * Edit a department
+     * @param int $id
+     * @return void
+     * @throws NotFoundException
      */
-    public function view() {
+    public function edit($id = null) {
+        // validate department id
+        if (!$id) {
+            throw new NotFoundException(__('Department not found'));
+        }
+
+        // find department from department id
+        $department = $this->Department->findById($id);
+        if (!$department) {
+            throw new NotFoundException(__('Department not found'));
+        }
         
+        // execute editing department when the request is put from Form
+        if ($this->request->is(array('post', 'put'))) {
+            $this->Department->id = $id;
+            
+            # execute. return page index if success. hold form state if falied 
+            if ($this->Department->save($this->request->data)) {
+                $this->Flash->success(__('Your Department has been updated.'));
+                return $this->redirect(array('action' => 'index'));
+            }
+            $this->Flash->error(__('Unable to update your Department.'));
+        }
+        
+        // show form
+        if (!$this->request->data) {
+            $this->request->data = $department;
+        }
     }
     
     /**
-     * Add a new user
+     * Delete a department
+     * @param int $id
+     * @return void
+     * @throws NotFoundException
      */
-    public function edit() {
+    public function delete($id = null) {
+        // validate department id
+        if (!$id) {
+            throw new NotFoundException(__('Department not found'));
+        }
+
+        // find department from department id
+        $department = $this->Department->findById($id);
+        if (!$department) {
+            throw new NotFoundException(__('Department not found'));
+        }
         
-    }
-    
-    /**
-     * Add a new user
-     */
-    public function delete() {
-        
+        // execute delete
+        if ($this->Department->delete($id)) {
+            $this->Flash->success(
+                __('The department with name: %s has been deleted.', h($department['Department']['name']))
+            );
+        } else {
+            $this->Flash->error(
+                __('The department with name: %s could not be deleted.', h($department['Department']['name']))
+            );
+        }
+
+        return $this->redirect(array('action' => 'index'));
     }
 }
