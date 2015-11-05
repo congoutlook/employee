@@ -57,7 +57,7 @@ class UsersController extends AppController {
     }
     
     /**
-     * action change pass
+     * Action change pass
      * @return void
      */
     public function change_pass() {
@@ -224,11 +224,11 @@ class UsersController extends AppController {
         // execute delete
         if ($this->User->delete($id)) {
             $this->Flash->success(
-                __('The post with name: %s has been deleted.', h($user['User']['username']))
+                __('The user with name: %s has been deleted.', h($user['User']['username']))
             );
         } else {
             $this->Flash->error(
-                __('The post with name: %s could not be deleted.', h($user['User']['username']))
+                __('The user with name: %s could not be deleted.', h($user['User']['username']))
             );
         }
 
