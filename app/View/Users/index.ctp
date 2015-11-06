@@ -1,4 +1,5 @@
 <?php
+
 /* 
  * Layout index user
  * @package         app.View.Users
@@ -6,9 +7,9 @@
  */
 ?>
 <div class="container">    
-    <div class="row page-header">
-        <h1 class="pull-left"><?php echo __('Users manager') ?></h1>   
-        <div id="toolbars" class="pull-right">
+  <div class="row page-header">
+    <h1 class="pull-left"><?php echo __('Users manager') ?></h1>   
+    <div id="toolbars" class="pull-right">
             <?php
             echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-plus"></i> %s', __('Add new')),
@@ -16,52 +17,52 @@
                 array('class' => 'btn btn-default', 'escape' => false)
             );
             ?>
-        </div>
     </div>
-    
-    <table class="table table-striped">
-        <colgroup>
-            <col class="col-md-1">
-            <col class="col-md-5">
-            <col class="col-md-3">
-            <col class="col-md-3">
-        </colgroup>
-        <tr>
-            <th><?php echo $this->Paginator->sort('id', 'ID'); ?></th>
-            <th><?php echo $this->Paginator->sort('title', 'Title'); ?></th>
-            <th><?php echo $this->Paginator->sort('email', 'Email'); ?></th>
-            <th><?php echo __('Action') ?></th>
-        </tr>
+  </div>
+
+  <table class="table table-striped">
+    <colgroup>
+      <col class="col-md-1">
+      <col class="col-md-5">
+      <col class="col-md-3">
+      <col class="col-md-3">
+    </colgroup>
+    <tr>
+      <th><?php echo $this->Paginator->sort('id', 'ID'); ?></th>
+      <th><?php echo $this->Paginator->sort('title', 'Title'); ?></th>
+      <th><?php echo $this->Paginator->sort('email', 'Email'); ?></th>
+      <th><?php echo __('Action') ?></th>
+    </tr>
            <?php foreach ($users as $item): ?>
-        <tr>
-            <td><?php echo $item['User']['id']; ?> </td>
-            <td><?php echo h($item['User']['username']); ?> </td>
-            <td><?php echo h($item['User']['email']); ?> </td>
-            <td>
+    <tr>
+      <td><?php echo $item['User']['id']; ?> </td>
+      <td><?php echo h($item['User']['username']); ?> </td>
+      <td><?php echo h($item['User']['email']); ?> </td>
+      <td>
                 <?php
                 echo $this->Html->link(
                     sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),
-                    array('action' => 'edit', 'id' => $item['User']['id']),
+                    array('action' => 'edit', $item['User']['id']),
                     array('escape' => false)
                 );
                 ?>
-                &nbsp;&nbsp;
+        &nbsp;&nbsp;
                 <?php
                 echo $this->Form->postLink(sprintf('<i class="glyphicon glyphicon-remove"></i> %s', __('Remove')), 
                     array('action' => 'delete', $item['User']['id']),
                     array('class'=>'', 'escape' => false, 'confirm' => 'Are you sure?'));
                 ?>
-            </td>
-        </tr>
+      </td>
+    </tr>
         <?php endforeach; ?>
-        <tfoot>
-            <tr>
-                <td colspan="5">
+    <tfoot>
+      <tr>
+        <td colspan="5">
                     <?php if(isset($this->params['paging']['User']['pageCount']) && $this->params['paging']['User']['pageCount'] > 1) : ?>
                         <?php echo $this->element('pagination') ?>
                     <?php endif; ?>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
 </div>
