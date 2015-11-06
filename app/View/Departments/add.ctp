@@ -1,4 +1,5 @@
 <?php
+
 /* 
  * Layout add department
  * @package         app.View.Departments
@@ -7,19 +8,19 @@
 ?>
 <?php echo $this->Flash->render('auth'); ?>
 <div class="container">
-    <div class="row page-header">
-        <h1 class="pull-left"><?php echo __('Add a new Department') ?></h1>
-        <div id="toolbars" class="pull-right">
-            <?php echo $this->Html->link(
-                sprintf('<i class="glyphicon glyphicon-backward"></i> %s', __('Close')),
-                array('action' => 'index'),
-                array('class' => 'btn btn-default', 'escape' => false)
-            );
-            ?>
-        </div>
+  <div class="row page-header">
+    <h1 class="pull-left"><?php echo __('Add a new Department') ?></h1>
+    <div id="toolbars" class="pull-right">
+        <?php echo $this->Html->link(
+            sprintf('<i class="glyphicon glyphicon-backward"></i> %s', __('Close')),
+            array('action' => 'index'),
+            array('class' => 'btn btn-default', 'escape' => false)
+        );
+        ?>
     </div>
-    
-    <div class="bs-example">        
+  </div>
+
+  <div class="bs-example">        
         <?php echo $this->Form->create('Department', array(
             'inputDefaults' => array(
                 'class' => 'form-control',
@@ -30,25 +31,25 @@
             'type' => 'POST',
         ));
         ?>
-            
+
             <?php echo $this->Form->input('name', 
                 array(
                     'placeholder' => 'enter a department\'s name',
                 ));
             ?>
-        
+
             <?php echo $this->Form->input('office_phone', 
                 array(
                     'placeholder' => 'enter a department\'s office phone number',
                 ));
             ?>
-        
+
             <?php echo $this->Form->button('<i class="glyphicon glyphicon-ok"></i> Save', 
                 array(
                     'class' => 'btn btn-default',
             ));
             ?>
         <?php echo $this->Form->end(null); ?>
-        </form>
-    </div>
+    </form>
+  </div>
 </div>
