@@ -8,6 +8,16 @@ and open the template in the editor.
     Author     : congnv
 */
 
+img.app-photo-list {
+    max-width: 35px;
+    max-height: 35px;
+    height: auto;
+    width: auto;
+    display: inline;
+    vertical-align: top;
+}
+
 #toolbars {
     margin-top: 20px;
 }
+
