@@ -17,7 +17,14 @@ img.app-photo-list {
     vertical-align: top;
 }
 
+.page-header {
+    margin-top: 0;
+}
+
 #toolbars {
     margin-top: 20px;
 }
 
+#UserPhotoPreview {
+    max-width: 300px;
+}

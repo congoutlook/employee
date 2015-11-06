@@ -10,6 +10,16 @@
     <div class="row page-header">
         <h1 class="pull-left"><?php echo __('Employee View detail') ?></h1>
         <div id="toolbars" class="pull-right">
+          <?php if (isset($this->Session->read('Auth.User')['id'])) : ?>
+            <?php
+                echo $this->Html->link(
+                    sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),
+                    array('action' => 'edit', $this->request->data['Employee']['id']),
+                    array('class' => 'btn btn-default', 'escape' => false)
+                );
+                ?>
+                &nbsp;&nbsp;
+            <?php endif; ?>
             <?php echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-backward"></i> %s', __('Close')),
                 array('action' => 'index'),
@@ -23,7 +33,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-6 col-md-4">
-                    <img class="img-responsive" src="<?php echo $this->webroot ?>files/<?php echo $this->request->data['Employee']['photo']; ?>" alt="<?php echo $this->request->data['Employee']['name'] ?>'s Photo" />
+                  <img class="img-responsive" src="<?php echo $this->webroot ?>files/<?php echo $this->request->data['Employee']['photo']; ?>" alt="<?php echo $this->request->data['Employee']['name'] ?>'s Photo" />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-8">
                     <div class="form-group">
