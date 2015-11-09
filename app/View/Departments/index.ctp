@@ -25,9 +25,9 @@
   <table class="table table-striped">
     <colgroup>
       <col class="col-md-1">
+      <col class="col-md-3">
+      <col class="col-md-3">
       <col class="col-md-5">
-      <col class="col-md-3">
-      <col class="col-md-3">
     </colgroup>
     <tr>
       <th><?php echo $this->Paginator->sort('id', 'ID'); ?></th>
@@ -62,6 +62,14 @@
             sprintf('<i class="glyphicon glyphicon-eye-open"></i> %s', __('View')),
             array('controller' => 'departments', 'action' => 'view', 'id' => $item['Department']['id']),
             array('escape' => false)
+        );
+        ?>
+        &nbsp;&nbsp;
+        <?php
+        echo $this->Html->link(
+            sprintf('<i class="glyphicon glyphicon-user"></i> %s', __('View employees')),
+            array('controller' => 'employees', 'action' => 'index', 'department_id' => $item['Department']['id']),
+            array('escape' => false, 'target' => '_blank')
         );
         ?>
       </td>
