@@ -50,7 +50,7 @@ class EmployeesController extends AppController
         $conditions = array();
         $whiteFieldsFilter = array('department_id');
 
-        if (($this->request->is('post') || $this->request->is('put')) && isset($this->data['Filter'])) {
+        if (($this->request->is(array('post', 'put'))) && isset($this->data['Filter'])) {
             $filterUrl['controller'] = $this->request->params['controller'];
             $filterUrl['action']     = $this->request->params['action'];
             $filterUrl['page']       = 1;

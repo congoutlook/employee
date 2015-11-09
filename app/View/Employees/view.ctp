@@ -10,7 +10,7 @@
     <div class="row page-header">
         <h1 class="pull-left"><?php echo __('Employee View detail') ?></h1>
         <div id="toolbars" class="pull-right">
-          <?php if (isset($this->Session->read('Auth.User')['id'])) : ?>
+          <?php if (AuthComponent::user('id')) : ?>
             <?php
                 echo $this->Html->link(
                     sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),

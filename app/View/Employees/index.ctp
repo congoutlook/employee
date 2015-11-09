@@ -25,9 +25,9 @@ $this->Html->scriptBlock(
 ?>
 <div class="container">    
   <div class="row page-header">
-    <h1 class="pull-left"><?php echo __('Employees manager') ?></h1>   
+    <h1 class="pull-left"><?php echo __('Employees Manager') ?></h1>   
     <div id="toolbars" class="pull-right">
-      <?php if (isset($this->Session->read('Auth.User')['id'])) : ?>
+      <?php if (AuthComponent::user('id')) : ?>
         <?php
         echo $this->Html->link(
             sprintf('<i class="glyphicon glyphicon-plus"></i> %s', __('Add new')),
@@ -52,11 +52,11 @@ $this->Html->scriptBlock(
             ),
             'class' => 'form-inline',
             'url' => array('controller' => 'employees', 'action' => 'index'),
-        ));
-        echo $this->Form->input('search', array('placeholder' => 'Search...'));
-        echo $this->Form->input('department_id', array('class' => 'form-control', 'options' => $departments, 'empty' => '- - Department - -', 'default' => ''));
-        echo $this->Form->button('<i class="glyphicon glyphicon-search"></i> Filter', array('class' => 'btn btn-info'));
-        echo $this->Form->button('<i class="glyphicon glyphicon-erase"></i> Clear', array('class' => 'btn btn-default btn-clear', 'type' => 'button'));
+        )) . PHP_EOL;
+        echo $this->Form->input('search', array('placeholder' => 'Search...')) . PHP_EOL;        
+        echo $this->Form->input('department_id', array('class' => 'form-control', 'options' => $departments, 'empty' => '- - Department - -', 'default' => '')) . PHP_EOL;        
+        echo $this->Form->button('<i class="glyphicon glyphicon-search"></i> Filter', array('class' => 'btn btn-info')) . PHP_EOL;        
+        echo $this->Form->button('<i class="glyphicon glyphicon-erase"></i> Clear', array('class' => 'btn btn-default btn-clear', 'type' => 'button')) . PHP_EOL;        
         echo $this->Form->end();
         ?>
     </div>
@@ -94,7 +94,7 @@ $this->Html->scriptBlock(
         <td><?php echo $this->View->formatPhoneNumber($item['Employee']['cellphone']); ?> </td>
         <td><?php echo $item['Employee']['email']; ?> </td>
         <td>
-        <?php if (isset($this->Session->read('Auth.User')['id'])) : ?>
+        <?php if (AuthComponent::user('id')) : ?>
             <?php
             echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),

@@ -44,7 +44,7 @@ $this->Paginator->options(
     <td><?php echo $this->View->formatPhoneNumber($item['Employee']['cellphone']); ?> </td>
     <td><?php echo $item['Employee']['email']; ?> </td>
     <td>
-        <?php if (isset($this->Session->read('Auth.User')['id'])) : ?>
+        <?php if (AuthComponent::user('id')) : ?>
             <?php
             echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),
