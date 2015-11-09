@@ -8,6 +8,8 @@ and open the template in the editor.
     Author     : congnv
 */
 
+body { padding-top: 70px; }
+
 img.app-photo-list {
     max-width: 35px;
     max-height: 35px;
