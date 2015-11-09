@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Application level Controller
  *
@@ -18,7 +19,6 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 App::uses('Controller', 'Controller');
 
 /**
@@ -30,43 +30,49 @@ App::uses('Controller', 'Controller');
  * @package		app.Controller
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
-class AppController extends Controller {
-    
+class AppController extends Controller
+{
+
     public $components = array(
         'Flash',
         'Auth' => array(
-            'loginRedirect' => array(
+            'loginRedirect'  => array(
                 'controller' => 'departments',
-                'action' => 'index'
+                'action'     => 'index'
             ),
             'logoutRedirect' => array(
                 'controller' => 'pages',
-                'action' => 'index',
+                'action'     => 'index',
                 'home'
             ),
-            'authenticate' => array(
+            'authenticate'   => array(
                 'Form' => array(
                     'passwordHasher' => 'Blowfish'
                 )
             )
-        )
+        ),
+        'DebugKit.Toolbar',
     );
-    
-    public function beforeFilter() {
+
+    public function beforeFilter()
+    {
         $this->Auth->allow('index', 'view');
-        
+
         // if user loged is in the first time, require change password
         if (isset($this->Auth->user()['is_first']) &&
             $this->Auth->user()['is_first'] &&
             (strtolower($this->request->params['action']) != 'change_pass')
-        )
-        {
+        ) {
             $this->Flash->success(__('You have to change your password for the first time'));
             return $this->redirect('/users/change_pass');
         }
     }
-    
-    public function afterFilter() {
+
+    public function beforeRender()
+    {
+        parent::beforeRender();
         
+        $this->layout = ($this->request->is("ajax")) ? "ajax" : "default";
     }
+
 }

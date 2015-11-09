@@ -14,7 +14,8 @@ class EmployeesController extends AppController
 
     const DIRECTORY_UPLOAD = 'files';
 
-    public $components = array('Paginator');
+    public $components = array('Paginator', 'RequestHandler');
+    public $helpers    = array('Js' => 'Jquery', 'View');
     public $paginate   = array(
         'limit' => 5,
         'order' => array(
@@ -45,8 +46,59 @@ class EmployeesController extends AppController
      */
     public function index()
     {
+        // get params filter
+        $conditions = array();
+        $whiteFieldsFilter = array('department_id');
+
+        if (($this->request->is('post') || $this->request->is('put')) && isset($this->data['Filter'])) {
+            $filterUrl['controller'] = $this->request->params['controller'];
+            $filterUrl['action']     = $this->request->params['action'];
+            $filterUrl['page']       = 1;
+
+            // build filter url
+            foreach ($this->data['Filter'] as $name => $value) {
+                if ($value) {
+                    $filterUrl[$name] = urlencode($value);
+                }
+            }
+
+            // redirect via filter url
+            return $this->redirect($filterUrl);
+        } else {
+            // build conditions array
+            foreach ($this->params['named'] as $paramName => $value) {
+                // Don't apply the default named parameters used for pagination
+                if (!in_array($paramName, array('page', 'sort', 'direction', 'limit'))) {
+                    if ($paramName == 'search') {
+                        $conditions['OR'] = array(
+                            array('Employee.name LIKE' => '%' . $value . '%'),
+                            array('Employee.email LIKE' => '%' . $value . '%')
+                        );
+                    } else {
+                        if (in_array($paramName, $whiteFieldsFilter)) {
+                            $conditions['Employee.' . $paramName] = $value;
+                        }
+                    }
+                    $this->request->data['Filter'][$paramName] = $value;
+                }
+            }
+        }
+
+        // build data filter form
+        $departments = $this->Employee->Department->find('list', array(
+            'fields' => array('Department.id', 'Department.name')
+        ));
+        $this->set('departments', $departments);
+
+        $this->paginate['conditions'] = $conditions;
+
         $this->Paginator->settings = $this->paginate;
         $this->set('employees', $this->Paginator->paginate('Employee'));
+
+        // render view ajax
+        if ($this->request->is("ajax")) {
+            $this->render('indexajax');
+        }
     }
 
     /**
@@ -153,6 +205,7 @@ class EmployeesController extends AppController
         $data = $this->request->data;
 
         $data['Employee']['photo'] = $employee['Employee']['photo'];
+        $oldPhoto                  = $employee['Employee']['photo'];
 
         // execute editing employee when the request is put from Form
         if ($this->request->is(array('post', 'put'))) {
@@ -177,6 +230,14 @@ class EmployeesController extends AppController
 
                         $data['Employee']['photo'] = time() . '_' . $info['filename'] . '.' . $info['extension'];
                         $uploadPath                = self::DIRECTORY_UPLOAD . DS . $data['Employee']['photo'];
+
+                        // remove old file
+                        if ($oldPhoto) {
+                            $oldPhotoFile = new File(self::DIRECTORY_UPLOAD . DS . $oldPhoto);
+                            if ($oldPhotoFile->exists()) {
+                                $oldPhotoFile->delete();
+                            }
+                        }
 
                         // Upload file
                         $file = new File($tmp);

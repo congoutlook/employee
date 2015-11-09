@@ -12,25 +12,32 @@ class Employee extends AppModel
 {
 
     public $validate  = array(
-        'name'      => array(
+        'name'         => array(
             'humanName' => array(
                 'rule'     => array('custom', '~^(?:[\p{L}\p{Mn}\p{Pd}\'\x{2019}]+\s[\p{L}\p{Mn}\p{Pd}\'\x{2019}]+\s?)+$~u'),
                 'required' => true,
                 'message'  => 'Letters only'
             )
         ),
-        'cellphone' => array(
-            'alphaNumeric' => array(
-                'rule'     => 'numeric',
-                'required' => true,
-                'message'  => 'Numbers only'
+        'cellphone'    => array(
+            'required' => array(
+                'required'   => true,
+                'allowEmpty' => false,
+                'last'       => true,
+                'rule'       => 'notBlank',
+                'message'    => 'This field cannot be left blank'
             ),
-            'between'      => array(
-                'rule'    => array('lengthBetween', 8, 15),
-                'message' => 'Between 8 to 15 characters'
+            'between'  => array(
+                'rule'    => array('lengthBetween', 10, 11),
+                'message' => 'Between 10 to 11 characters'
+            ),
+            'phone'    => array(
+                'rule'    => array('phone', '/^[0-9 ]+$/'),
+                'last'    => true,
+                'message' => 'Phone Numbers only'
             ),
         ),
-        'email'     => array(
+        'email'        => array(
             'email'    => array(
                 'rule'     => 'email',
                 'required' => true,
@@ -44,7 +51,7 @@ class Employee extends AppModel
                 'message'    => 'This email has already taken'
             )
         ),
-        'photo_upload'     => array(
+        'photo_upload' => array(
             'uploadError' => array(
                 'rule'       => 'uploadError',
                 'message'    => 'Something went wrong with the file upload',
