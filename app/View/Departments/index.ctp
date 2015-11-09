@@ -48,7 +48,7 @@
             <?php
                 echo $this->Html->link(
                     sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),
-                    array('controller' => 'departments', 'action' => 'edit', 'id' => $item['Department']['id']),
+                    array('controller' => 'departments', 'action' => 'edit', $item['Department']['id']),
                     array('escape' => false)
                 );
                 ?>
@@ -63,7 +63,7 @@
         <?php
         echo $this->Html->link(
             sprintf('<i class="glyphicon glyphicon-eye-open"></i> %s', __('View')),
-            array('controller' => 'departments', 'action' => 'view', 'id' => $item['Department']['id']),
+            array('controller' => 'departments', 'action' => 'view', $item['Department']['id']),
             array('escape' => false)
         );
         ?>

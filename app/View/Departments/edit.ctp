@@ -44,6 +44,19 @@
                 ));
             ?>
 
+            <?php echo $this->Form->input('Manager.id', 
+                array(
+                    'label' => 'Manager',
+                    'class' => 'form-control', 
+                    'options' => $employees, 
+                    'empty' => '- - Department - -', 
+                    'default' => '',
+                    'value' => $this->request->data['Manager']['id']
+                   )
+                );
+            ?>
+
+
             <?php echo $this->Form->button('<i class="glyphicon glyphicon-ok"></i> Save', 
                 array(
                     'class' => 'btn btn-default',
