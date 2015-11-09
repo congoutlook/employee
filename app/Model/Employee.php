@@ -41,11 +41,11 @@ class Employee extends AppModel
             'email'    => array(
                 'rule'     => 'email',
                 'required' => true,
+                'allowEmpty' => false,
             ),
             'isUnique' => array(
                 'rule'       => 'isUnique',
                 'required'   => true,
-                'allowEmpty' => false,
                 'on'         => 'create', // here
                 'last'       => false,
                 'message'    => 'This email has already taken'

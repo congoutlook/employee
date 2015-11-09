@@ -20,14 +20,14 @@ $this->Paginator->options(
     <col class="col-md-2">
     <col class="col-md-2">
     <col class="col-md-2">
-    <col class="col-md-2">
+    <col class="col-md-3">
   </colgroup>
   <tr>
     <th><?php echo $this->Paginator->sort('id', 'ID'); ?></th>
     <th><?php echo $this->Paginator->sort('name', 'Name'); ?></th>
+    <th><?php echo $this->Paginator->sort('department_id', 'Department'); ?></th>
     <th><?php echo __('Job.Title') ?></th>
     <th><?php echo __('Cellphone') ?></th>
-    <th><?php echo __('Email') ?></th>
     <th><?php echo __('Action') ?></th>
   </tr>
     <?php foreach ($employees as $item): ?>
@@ -40,9 +40,9 @@ $this->Paginator->options(
       <img class="img-responsive app-photo-list" src="<?php echo $path ?>" alt="<?php echo $item['Employee']['name']; ?>'s photo" />
             <?php echo $item['Employee']['name']; ?>
     </td>
+    <td><?php echo ($item['Department']['name']) ? $item['Department']['name'] : '<span class="text-muted">n/a</span>' ?> </td>
     <td><?php echo $item['Employee']['job_title']; ?> </td>
     <td><?php echo $this->View->formatPhoneNumber($item['Employee']['cellphone']); ?> </td>
-    <td><?php echo $item['Employee']['email']; ?> </td>
     <td>
         <?php if (AuthComponent::user('id')) : ?>
             <?php
