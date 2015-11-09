@@ -28,7 +28,7 @@
       </div>
       <div class="form-group">
         <label>Office Phone</label>
-        <p><i class="glyphicon glyphicon-phone-alt"></i> <?php echo $this->request->data['Department']['office_phone'] ?></p>
+        <p><i class="glyphicon glyphicon-phone-alt"></i> <?php echo $this->View->formatPhoneNumber($this->request->data['Department']['office_phone']) ?></p>
       </div>
     </div>
     <div class="panel-footer">

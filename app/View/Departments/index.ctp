@@ -39,7 +39,7 @@
     <tr>
       <td><?php echo $item['Department']['id']; ?> </td>
       <td><?php echo h($item['Department']['name']); ?> </td>
-      <td><?php echo h($item['Department']['office_phone']); ?> </td>
+      <td><?php echo $this->View->formatPhoneNumber($item['Department']['office_phone']); ?> </td>
       <td>
         <?php if (isset($this->Session->read('Auth.User')['id'])) : ?>
             <?php

@@ -12,6 +12,8 @@ class DepartmentsController extends AppController
 {
 
     public $components = array('Paginator');
+    
+    public $helpes = array('View');
 
     public $paginate = array(
         'limit' => 5,
