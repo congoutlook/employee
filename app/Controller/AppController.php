@@ -59,12 +59,11 @@ class AppController extends Controller
         $this->Auth->allow('index', 'view');
 
         // if user loged is in the first time, require change password
-        if (isset($this->Auth->user()['is_first']) &&
-            $this->Auth->user()['is_first'] &&
+        if ($this->Auth->user('is_first') && 
             (strtolower($this->request->params['action']) != 'change_pass')
         ) {
             $this->Flash->success(__('You have to change your password for the first time'));
-            return $this->redirect('/users/change_pass');
+            return $this->redirect(array('controller' => 'users', 'action' => 'change_pass'));
         }
     }
 
