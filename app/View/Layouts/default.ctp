@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -14,21 +15,21 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
+$pageDscription = __d('employee_directory', 'Employee Directory');
 ?>
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <?php echo $this->Html->charset(); ?>
     <title>
-        <?php echo $cakeDescription ?>:
+        <?php echo $pageDscription ?>:
         <?php echo $this->fetch('title'); ?>
     </title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -47,11 +48,11 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
     echo $this->fetch('css');
     echo $this->fetch('script');
     ?>
-</head>
-<body>
-    
+  </head>
+  <body>
+
     <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
+      <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -68,52 +69,50 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
           <ul class="nav navbar-nav">
             <li><a href="<?php echo Router::url('/', true) ?>"><i class=" glyphicon glyphicon-home"></i> Home</a></li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class=" glyphicon glyphicon-th-large"></i> Departments <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="<?php echo Router::url('/departments/add', true) ?>"><i class="glyphicon glyphicon-plus"></i> Add department</a></li>
-                  <li><a href="<?php echo Router::url('/departments/index', true) ?>"><i class="glyphicon glyphicon-align-left"></i> All departments</a></li>
-                </ul>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class=" glyphicon glyphicon-th-large"></i> Departments <span class="caret"></span></a>
+              <ul class="dropdown-menu">                    
+                <li><a href="<?php echo Router::url(array('controller' => 'departments', 'action' => 'index'), true) ?>"><i class="glyphicon glyphicon-align-left"></i> Departments Manager</a></li>
+                <li><a href="<?php echo Router::url(array('controller' => 'departments', 'action' => 'add'), true) ?>"><i class="glyphicon glyphicon-plus"></i> Add department</a></li>
+              </ul>
             </li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-user"></i> Employees <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="<?php echo Router::url('/employees/add', true) ?>"><i class="glyphicon glyphicon-plus"></i> Add employee</a></li>
-                  <li><a href="<?php echo Router::url('/employees/index', true) ?>"><i class="glyphicon glyphicon-align-left"></i> Search for employee</a></li>
-                </ul>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-user"></i> Employees <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="<?php echo Router::url(array('controller' => 'employees', 'action' => 'index'), true) ?>"><i class="glyphicon glyphicon-align-left"></i> Employees Manager</a></li>
+                <li><a href="<?php echo Router::url(array('controller' => 'employees', 'action' => 'add'), true) ?>"><i class="glyphicon glyphicon-plus"></i> Add employee</a></li>                  
+              </ul>
             </li>
           </ul>
-          <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search">
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
+
           <ul class="nav navbar-nav navbar-right">
-            <?php if (isset($this->Session->read('Auth.User')['id'])) : ?>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello <?php echo $this->Session->read('Auth.User')['username']?> <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="<?php echo Router::url('/users/add', true) ?>"><i class="glyphicon glyphicon-plus"></i> Add a new user</a></li>
-                  <li><a href="<?php echo Router::url('/users/index', true) ?>"><i class="glyphicon glyphicon-align-left"></i> List all users</a></li>
-                </ul>
-              </li>
-              <li><?php echo $this->Html->link('Logout', '/users/logout'); ?></li>
+            <?php if (AuthComponent::user('id')) : ?>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello <?php echo AuthComponent::user('username') ?> <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="<?php echo Router::url(array('controller' => 'users', 'action' => 'index'), true) ?>"><i class="glyphicon glyphicon-align-left"></i> Users Manager</a></li>
+                <li><a href="<?php echo Router::url(array('controller' => 'users', 'action' => 'add'), true) ?>"><i class="glyphicon glyphicon-plus"></i> Add a new user</a></li>
+              </ul>
+            </li>
+            <li><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout')); ?></li>
             <?php else: ?>
-              <li><?php echo $this->Html->link('Login', '/users/login'); ?></li>
+            <li><?php echo $this->Html->link('Login', array('controller' => 'users', 'action' => 'login')); ?></li>
             <?php endif; ?>
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
-    
+
     <div id="container">
-        <div id="content">
+      <div id="content">
             <?php echo $this->Flash->render(); ?>
             <?php echo $this->fetch('content'); ?>
+      </div>
+      <div id="footer">
+        <div class="container">
+          <div>© <?php echo date('Y') ?> Rikkei</div>
+
         </div>
-        <div id="footer">
-            
-        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
