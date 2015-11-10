@@ -32,12 +32,11 @@
                 ));
             ?>
 
-            <?php echo $this->Form->input('password', 
+            <?php echo $this->Form->input('password2', 
                 array(
-                    'label' => 'Re-password',
-                    'placeholder' => 'password again',
-                    'name' => 'data[User][password2]',
-                    'id' => 'UserPassword2',
+                    'label' => 'Confirm Password',
+                    'placeholder' => 'confirm password',
+                    'type' => 'password'
                 ));
             ?>
 

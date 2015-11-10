@@ -15,35 +15,35 @@ class User extends AppModel
     public $validate = array(
         'username' => array(
             'alphaNumeric' => array(
-                'rule'     => 'alphaNumeric',
-                'required' => true,
-                'message'  => 'Letters and numbers only'
+                'rule'       => 'alphaNumeric',
+                'required'   => true,
+                'allowEmpty' => false,
+                'message'    => 'Letters and numbers only'
             ),
             'between'      => array(
                 'rule'    => array('lengthBetween', 5, 15),
                 'message' => 'Between 5 to 15 characters'
             ),
             'isUnique'     => array(
-                'rule'       => 'isUnique',
-                'required'   => true,
-                'allowEmpty' => false,
-                'on'         => 'create', // here
-                'last'       => false,
-                'message'    => 'This username has already taken'
+                'rule'     => 'isUnique',
+                'required' => true,
+                'on'       => 'create', // here
+                'last'     => false,
+                'message'  => 'This username has already taken'
             )
         ),
         'email'    => array(
             'email'    => array(
-                'rule'     => 'email',
-                'required' => true,
-            ),
-            'isUnique' => array(
-                'rule'       => 'isUnique',
+                'rule'       => 'email',
                 'required'   => true,
                 'allowEmpty' => false,
-                'on'         => 'create', // here
-                'last'       => false,
-                'message'    => 'This email has already taken'
+            ),
+            'isUnique' => array(
+                'rule'     => 'isUnique',
+                'required' => true,
+                'on'       => 'create', // here
+                'last'     => false,
+                'message'  => 'This email has already taken'
             )
         ),
         'password' => array(
@@ -64,7 +64,7 @@ class User extends AppModel
     {
 
         if (isset($this->data['User']['password']) &&
-                isset($this->data['User']['password2'])
+            isset($this->data['User']['password2'])
         ) {
             if ($this->data['User']['password'] == $this->data['User']['password2']) {
                 return true;
@@ -88,10 +88,10 @@ class User extends AppModel
         }
 
         if (isset($this->data[$this->alias]['password']) &&
-                strlen($this->data[$this->alias]['password'])) {
+            strlen($this->data[$this->alias]['password'])) {
             $passwordHasher                       = new BlowfishPasswordHasher();
             $this->data[$this->alias]['password'] = $passwordHasher->hash(
-                    $this->data[$this->alias]['password']
+                $this->data[$this->alias]['password']
             );
         }
 

@@ -66,7 +66,7 @@ class UsersController extends AppController
     public function change_pass()
     {
         // check user
-        if (!isset($this->Auth->user()['id'])) {
+        if (!$this->Auth->user('id')) {
             throw new NotFoundException(__('User not found'));
         }
 
@@ -74,21 +74,20 @@ class UsersController extends AppController
         unset($this->User->validate['username']);
         unset($this->User->validate['email']);
         $this->User->validate['password2']                  = $this->User->validate['password'];
-        $this->User->validate['password']['matchPasswords'] = array(
+        $this->User->validate['password2']['matchPasswords'] = array(
             'rule'    => 'matchPasswords',
-            'message' => 'Re-Password does not match'
+            'message' => 'Confirm password does not match'
         );
 
         // execute editing user when the request is put from Form
         if ($this->request->is(array('post', 'put'))) {
-            $this->User->id = $this->Auth->user()['id'];
+            $this->User->id = $this->Auth->user('id');
             if ($this->User->save($this->request->data)) {
 
                 # Reset session auth
-                $resetUser = $this->User->findById($this->User->id);
+                $resetUser = $this->User->getById($this->User->id);
                 $resetUser = $resetUser['User'];
                 unset($resetUser['password']);
-                #$this->Session->renew();
                 $this->Session->write(AuthComponent::$sessionKey, $resetUser);
 
                 # send mail
@@ -181,7 +180,7 @@ class UsersController extends AppController
         }
 
         // find user from user id
-        $user = $this->User->findById($id);
+        $user = $this->User->getById($id);
         if (!$user) {
             throw new NotFoundException(__('User not found'));
         }
@@ -237,13 +236,13 @@ class UsersController extends AppController
         }
 
         // find user from user id
-        $user = $this->User->findById($id);
+        $user = $this->User->getById($id);
         if (!$user) {
             throw new NotFoundException(__('User not found'));
         }
 
         // check user is loging
-        if ($user['User']['id'] == $this->Auth->user()['id']) {
+        if ($user['User']['id'] == $this->Auth->user('id')) {
             $this->Flash->error(__('Sorry, you cannot delete yourself'));
             return $this->redirect(array('action' => 'index'));
         }
