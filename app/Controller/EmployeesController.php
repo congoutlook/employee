@@ -15,7 +15,7 @@ class EmployeesController extends AppController
     const DIRECTORY_UPLOAD = 'files';
 
     public $components = array('Paginator', 'RequestHandler');
-    public $helpers    = array('Js' => 'Jquery', 'View');
+    public $helpers    = array('Js' => 'Jquery', 'Format');
     public $paginate   = array(
         'limit' => 5,
         'order' => array(
@@ -23,11 +23,6 @@ class EmployeesController extends AppController
             'Employees.name' => 'asc'
         )
     );
-
-    public function __construct($request = null, $response = null)
-    {
-        parent::__construct($request, $response);
-    }
 
     /**
      * Hook before filter
@@ -47,7 +42,7 @@ class EmployeesController extends AppController
     public function index()
     {
         // get params filter
-        $conditions = array();
+        $conditions        = array();
         $whiteFieldsFilter = array('department_id');
 
         if (($this->request->is(array('post', 'put'))) && isset($this->data['Filter'])) {
@@ -84,11 +79,9 @@ class EmployeesController extends AppController
             }
         }
 
-        // build data filter form
-        $departments = $this->Employee->Department->find('list', array(
-            'fields' => array('Department.id', 'Department.name')
-        ));
-        $this->set('departments', $departments);
+        // build data filter form, get department dependent
+        $this->loadModel('Department');
+        $this->set('departments', $this->Department->getListDepartments());
 
         $this->paginate['conditions'] = $conditions;
 
@@ -116,7 +109,7 @@ class EmployeesController extends AppController
         }
 
         // find employee from employee id
-        $employee = $this->Employee->findById($id);
+        $employee = $this->Employee->getById($id);
         if (!$employee) {
             throw new NotFoundException(__('Employee not found'));
         }
@@ -176,10 +169,8 @@ class EmployeesController extends AppController
         }
 
         // get department dependent
-        $departments = $this->Employee->Department->find('list', array(
-            'fields' => array('Department.id', 'Department.name')
-        ));
-        $this->set('departments', $departments);
+        $this->loadModel('Department');
+        $this->set('departments', $this->Department->getListDepartments());
     }
 
     /**
@@ -197,7 +188,7 @@ class EmployeesController extends AppController
         }
 
         // find employee from employee id
-        $employee = $this->Employee->findById($id);
+        $employee = $this->Employee->getById($id);
         if (!$employee) {
             throw new NotFoundException(__('Employee not found'));
         }
@@ -252,8 +243,27 @@ class EmployeesController extends AppController
 
                 unset($data['Employee']['photo_upload']);
 
+                // change manager
+                $oldManager = $this->Employee->getManagerByDepartmentId($data['Employee']['department_id']);
+
                 # execute save without validate. return page index if success.
                 if ($this->Employee->save($data, false)) {
+
+                    // change manager
+                    if ($data['Employee']['is_manager'] && isset($oldManager['Employee']['id']) &&
+                        $oldManager['Employee']['id'] != $this->Employee->id
+                    ) {
+
+                        $saveAllManager      = array(
+                            array(
+                                'id'         => $oldManager['Employee']['id'],
+                                'is_manager' => 0,
+                            ),
+                        );
+                        $options['validate'] = false;
+                        $this->Employee->saveAll($saveAllManager, $options);
+                    }
+
                     $this->Flash->success(__('Your Employee has been updated.'));
                     return $this->redirect(array('action' => 'index'));
                 }
@@ -262,10 +272,8 @@ class EmployeesController extends AppController
         }
 
         // get department dependent
-        $departments = $this->Employee->Department->find('list', array(
-            'fields' => array('Department.id', 'Department.name')
-        ));
-        $this->set('departments', $departments);
+        $this->loadModel('Department');
+        $this->set('departments', $this->Department->getListDepartments());
 
         // show form
         if (!$this->request->data) {
@@ -293,7 +301,7 @@ class EmployeesController extends AppController
         }
 
         // find employee from employee id
-        $employee = $this->Employee->findById($id);
+        $employee = $this->Employee->getById($id);
         if (!$employee) {
             throw new NotFoundException(__('Employee not found'));
         }

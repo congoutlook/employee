@@ -7,6 +7,7 @@
  * @author          Nguyen Van Cong
  */
 App::uses('AppModel', 'Model');
+App::uses('Department', 'Model/Department');
 
 class Employee extends AppModel
 {
@@ -75,4 +76,20 @@ class Employee extends AppModel
     // employee belongs to department
     public $belongsTo = array('Department');
 
+    
+    /**
+     * 
+     * @param type $departmentId
+     * @param type $options
+     * @return array|null Array of a record, or Null on failure.
+     */
+    public function getManagerByDepartmentId($departmentId) {
+        return $this->find('first', array(
+            'fields' => array('Employee.id', 'Employee.is_manager'),
+            'conditions' => array(
+                'Employee.department_id' => (int)$departmentId,
+                'Employee.is_manager' => 1
+            )
+        ));
+    }
 }

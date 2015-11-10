@@ -42,7 +42,7 @@
                     </div>
                     <div class="form-group">
                         <label>Cellphone</label>
-                        <p><i class="glyphicon glyphicon-phone"></i> <?php echo $this->View->formatPhoneNumber($this->request->data['Employee']['cellphone']) ?></p>
+                        <p><i class="glyphicon glyphicon-phone"></i> <?php echo $this->Format->phoneNumber($this->request->data['Employee']['cellphone']) ?></p>
                     </div>
                     <div class="form-group">
                         <label>Email</label>

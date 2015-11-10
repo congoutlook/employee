@@ -42,7 +42,7 @@ $this->Paginator->options(
     </td>
     <td><?php echo ($item['Department']['name']) ? $item['Department']['name'] : '<span class="text-muted">n/a</span>' ?> </td>
     <td><?php echo $item['Employee']['job_title']; ?> </td>
-    <td><?php echo $this->View->formatPhoneNumber($item['Employee']['cellphone']); ?> </td>
+    <td><?php echo $this->Format->phoneNumber($item['Employee']['cellphone']); ?> </td>
     <td>
         <?php if (AuthComponent::user('id')) : ?>
             <?php

@@ -80,12 +80,28 @@ $photo = isset($this->request->data['Employee']['photo']) ? $this->webroot.'/fil
                     'placeholder' => 'employee\'s department',
                 ));
             ?>
+    
+            <?php echo $this->Form->input('is_manager', 
+                array(
+                    'label' => 'Manager',
+                    'class' => 'form-control', 
+                    'options' => array(
+                        '0' => 'No',
+                        '1' => 'Yes'
+                    ), 
+                    'empty' => false, 
+                    'default' => 0,
+                   )
+                );
+            ?>
 
             <?php echo $this->Form->button('<i class="glyphicon glyphicon-ok"></i> Save', 
                 array(
                     'class' => 'btn btn-default',
             ));
             ?>
+    
+            
         <?php echo $this->Form->end(null); ?>
     </form>
   </div>
