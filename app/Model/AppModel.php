@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Application model for CakePHP.
  *
@@ -18,7 +19,6 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 App::uses('Model', 'Model');
 
 /**
@@ -29,5 +29,20 @@ App::uses('Model', 'Model');
  *
  * @package       app.Model
  */
-class AppModel extends Model {
+class AppModel extends Model
+{
+
+    /**
+     * Fetch data array by Id
+     * @param int $id
+     * @param null $options
+     * @return array|null Array of a record, or Null on failure.
+     */
+    public function getById($id, $options = array())
+    {
+        // custom params $options
+
+        return $this->findById($id, $options);
+    }
+
 }
