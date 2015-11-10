@@ -41,7 +41,7 @@
     <tr>
       <td><?php echo $item['Department']['id']; ?> </td>
       <td><?php echo h($item['Department']['name']); ?> </td>
-      <td><?php echo $this->View->formatPhoneNumber($item['Department']['office_phone']); ?> </td>
+      <td><?php echo $this->Format->phoneNumber($item['Department']['office_phone']); ?> </td>
       <td><?php echo ($item['Manager']['name']) ? $item['Manager']['name'] : '<span class="text-muted">n/a</span>' ?> </td>
       <td>
         <?php if (AuthComponent::user('id')) : ?>

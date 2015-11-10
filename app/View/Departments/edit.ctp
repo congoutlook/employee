@@ -49,9 +49,7 @@
                     'label' => 'Manager',
                     'class' => 'form-control', 
                     'options' => $employees, 
-                    'empty' => '- - Department - -', 
-                    'default' => '',
-                    'value' => $this->request->data['Manager']['id']
+                    'empty' => '- - Department - -',
                    )
                 );
             ?>

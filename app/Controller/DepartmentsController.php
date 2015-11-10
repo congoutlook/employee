@@ -12,9 +12,9 @@ class DepartmentsController extends AppController
 {
 
     public $components = array('Paginator');
-    public $helpes = array('View');
-    public $uses = array('Department', 'Employee');
-    public $paginate = array(
+    public $helpers    = array('Format');
+    public $uses       = array('Department', 'Employee');
+    public $paginate   = array(
         'limit' => 5,
         'order' => array(
             'Departments.id'   => 'asc',
@@ -59,7 +59,7 @@ class DepartmentsController extends AppController
         }
 
         // find department from department id
-        $department = $this->Department->findById($id);
+        $department = $this->Department->getById($id);
         if (!$department) {
             throw new NotFoundException(__('Department not found'));
         }
@@ -104,7 +104,7 @@ class DepartmentsController extends AppController
         }
 
         // find department from department id
-        $department = $this->Department->findById($id);
+        $department = $this->Department->getById($id);
         if (!$department) {
             throw new NotFoundException(__('Department not found'));
         }
@@ -142,10 +142,7 @@ class DepartmentsController extends AppController
 
 
         // build data filter form
-        $employees = $this->Employee->find('list', array(
-            'fields'     => array('Employee.id', 'Employee.name'),
-            'conditions' => array('Employee.department_id' => $department['Department']['id'])
-        ));
+        $employees = $this->Department->getEmployeesByDepartmentId($department['Department']['id']);
         $this->set('employees', $employees);
 
         // show form
@@ -174,11 +171,20 @@ class DepartmentsController extends AppController
         }
 
         // find department from department id
-        $department = $this->Department->findById($id);
+        $department = $this->Department->getById($id);
         if (!$department) {
             throw new NotFoundException(__('Department not found'));
         }
-
+        
+        $countEmployees = $this->Department->countEmployeeInDepartment($id);
+        
+        if ($countEmployees > 0) {
+            $this->Flash->error(
+                __('The department with name: %s could not be deleted. This department still contains employees', h($department['Department']['name']))
+            );
+            return $this->redirect(array('action' => 'index'));
+        }
+        
         // execute delete
         if ($this->Department->delete($id)) {
             $this->Flash->success(
