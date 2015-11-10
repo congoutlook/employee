@@ -77,6 +77,16 @@ class Department extends AppModel
                 'conditions' => $options['conditions']
         ));
     }
+    
+    /**
+     * Get list departments
+     * @return indexed array
+     */
+    public function getListDepartments() {
+        return $this->find('list', array(
+            'fields' => array('Department.id', 'Department.name')
+        ));
+    }
 
     /**
      * get Number of employee in a department

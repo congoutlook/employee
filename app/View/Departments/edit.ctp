@@ -49,7 +49,7 @@
                     'label' => 'Manager',
                     'class' => 'form-control', 
                     'options' => $employees, 
-                    'empty' => '- - Department - -',
+                    'empty' => false,
                    )
                 );
             ?>
