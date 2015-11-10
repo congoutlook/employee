@@ -113,24 +113,31 @@ class DepartmentsController extends AppController
         if ($this->request->is(array('post', 'put'))) {
             $this->Department->id = $id;
 
+            // change manager
+            $this->loadModel('Employee');
+            $oldManager = $this->Employee->getManagerByDepartmentId($id);
+
             # execute. return page index if success. hold form state if falied 
             if ($this->Department->save($this->request->data)) {
 
                 # update manager
-                if ($department['Manager']['id'] != $this->request->data['Manager']['id'] && $this->request->data['Manager']['id']) {
-                    $saveAll = array(
-                        array(
-                            'id'         => $department['Manager']['id'],
-                            'is_manager' => 0,
-                        ),
-                        array(
-                            'id'         => $this->request->data['Manager']['id'],
-                            'is_manager' => 1
-                        )
+                $saveAllManager = array();
+                if ($this->request->data['Manager']['id']) {
+                    $saveAllManager[] = array(
+                        'id'         => $this->request->data['Manager']['id'],
+                        'is_manager' => 1,
                     );
+                }
 
+                if (isset($oldManager['Employee']['id']) && $oldManager['Employee']['id'] != $this->request->data['Manager']['id']) {
+                    $saveAllManager[] = array(
+                        'id'         => $oldManager['Employee']['id'],
+                        'is_manager' => 0,
+                    );
+                }
+                if (count($saveAllManager)) {
                     $options['validate'] = false;
-                    $this->Employee->saveAll($saveAll, $options);
+                    $this->Employee->saveAll($saveAllManager, $options);
                 }
 
                 $this->Flash->success(__('Your Department has been updated.'));
@@ -175,16 +182,16 @@ class DepartmentsController extends AppController
         if (!$department) {
             throw new NotFoundException(__('Department not found'));
         }
-        
+
+        // check count employees
         $countEmployees = $this->Department->countEmployeeInDepartment($id);
-        
         if ($countEmployees > 0) {
             $this->Flash->error(
                 __('The department with name: %s could not be deleted. This department still contains employees', h($department['Department']['name']))
             );
             return $this->redirect(array('action' => 'index'));
         }
-        
+
         // execute delete
         if ($this->Department->delete($id)) {
             $this->Flash->success(
