@@ -5,10 +5,10 @@
  */
 App::uses('AppHelper', 'View/Helper');
 
-class ViewHelper extends AppHelper
+class FormatHelper extends AppHelper
 {
 
-    public function formatPhoneNumber($phoneNumber)
+    public function phoneNumber($phoneNumber)
     {
         $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
 
