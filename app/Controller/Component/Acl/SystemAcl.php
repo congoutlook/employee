@@ -1,27 +1,14 @@
 <?php
 
-/**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       Cake.Controller.Component.Acl
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
- */
 App::uses('AclInterface', 'Controller/Component/Acl');
 App::uses('Permission', 'Model');
 
 /**
- * IniAcl implements an access control system using an INI file. An example
- * of the ini file used can be found in /config/acl.ini.php.
+ * SystemAcl implements an access control system using an INI file & permission setup in the database. An example
+ * of the ini file used can be found in /config/aclsystem.ini.php.
  *
- * @package       Cake.Controller.Component.Acl
+ * @package         App.Controller.Component.Acl
+ * @author          Nguyen Van Cong
  */
 class SystemAcl extends Object implements AclInterface
 {
@@ -31,15 +18,14 @@ class SystemAcl extends Object implements AclInterface
      *
      * @var array
      */
-    public $config = null;
-    
+    public $config     = null;
     public $Permission = null;
 
     public function __construct()
     {
         parent::__construct();
-        $this->config = $this->getAllPermissions();
-        
+        $this->config     = $this->getAllPermissions();
+        $this->Permission = ClassRegistry::init('Permission')->getPermissions();
     }
 
     /**
@@ -50,8 +36,8 @@ class SystemAcl extends Object implements AclInterface
      */
     public function initialize(Component $component)
     {
-        $component->config = $this->config;
-        $component->Permission = ClassRegistry::init('Permission')->getPermissions();
+        $component->config     = $this->config;
+        $component->Permission = $this->Permission;
     }
 
     /**
@@ -102,24 +88,53 @@ class SystemAcl extends Object implements AclInterface
      * @param string $aco ACO
      * @param string $action Action
      * @return bool Success
+     * 
+     * @example
+     * $check = $Acl->check($Auth, 'controllerLogical', 'actionLogical');
+     * $check = $Acl->check($this->Auth, 'users', 'add');
+     * $check = $Acl->check($userGroupId, 'users', 'add');
+     * $check = $Acl->check(1, 'users', 'add');
+     * $check = $Acl->check($userArrayGroupIds, 'users', 'add');
+     * $check = $Acl->check(array(1, 2, 3), 'users', 'add');
+     * $check = $Acl->check(array('Group' => array('id' => 1)), 'users', 'add');
      */
     public function check($aro, $aco, $action = null)
     {
-        if (!$this->Permission) {
-            $this->Permission = ClassRegistry::init('Permission')->getPermissions();
-        }
-        
         // source for comparing
-        $source = $action ? 
+        $source = $action ?
             (isset($this->Permission[$aco][$action]) ? $this->Permission[$aco][$action] : array()) : $this->Permission[$aco]
         ;
-        
-        if ($aro instanceof AuthComponent) {
-            if (array_search($aro->user('group_id'), $source)) {
+
+        // if $aro is group id
+        if (is_int($aro)) {
+            if (array_search((int) $aro, $source) !== false) {
                 return true;
             }
         }
- 
+
+        // if $aro is instance of AuthComponent
+        if ($aro instanceof AuthComponent) {
+            if (array_search($aro->user('group_id'), $source) !== false) {
+                return true;
+            }
+        }
+        
+        // if $aro is array of int
+        if (is_array($aro) && $this->_isArrayInt($aro)) {
+            foreach ($aro as $groupId) {
+                if (array_search($groupId, $source) !== false) {
+                    return true;
+                }
+            }
+        }
+        
+        // if $aro array('Group' => array('id' => 1))
+        if (is_array($aro) && isset($aro['Group']['id'])) {
+            if (array_search($aro['Group']['id'], $source) !== false) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -132,7 +147,7 @@ class SystemAcl extends Object implements AclInterface
                 foreach ($aclPermissions as $logical => $aclPermission) {
                     $permissions = array();
                     if (isset($aclPermission['permissions'])) {
-                        $permissions = $this->arrayTrim(explode(",", $aclPermission['permissions']));
+                        $permissions = $this->arrayTrim(explode(',', $aclPermission['permissions']));
                     }
                     $this->config[$logical] = $permissions;
                 }
@@ -168,6 +183,15 @@ class SystemAcl extends Object implements AclInterface
             $array[$key] = trim($value);
         }
         return $array;
+    }
+    
+    private function _isArrayInt($array) {
+        foreach ($array as $key => $value) {
+            if (!is_numeric($value)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
