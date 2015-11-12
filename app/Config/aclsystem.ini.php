@@ -38,6 +38,9 @@ permissions = access, add, edit, delete, permission
 [groups]
 permissions = access, add, edit, delete
 
+[permissions]
+permissions = access, config
+
 [departments]
 permissions = access, add, edit, delete
 
