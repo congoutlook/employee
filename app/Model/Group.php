@@ -7,15 +7,29 @@
  * @author          Nguyen Van Cong
  */
 App::uses('AppModel', 'Model');
+App::uses('User', 'Model');
 
 class Group extends AppModel
 {
 
-    public $actsAs = array('Acl' => array('type' => 'requester'));
+    public $validate = array(
+        'name' => array(
+            'isUnique' => array(
+                'rule'       => 'isUnique',
+                'required'   => true,
+                'allowEmpty' => false,
+                'on'         => 'create', // here
+                'last'       => false,
+                'message'    => 'This group name has already taken'
+            )
+        ),
+    );
 
-    public function parentNode()
+    public function countUserInGroup($groupId)
     {
-        return null;
+        return ClassRegistry::init('User')->find('count', array(
+                'conditions' => array('User.group_id' => $groupId)
+        ));
     }
 
 }

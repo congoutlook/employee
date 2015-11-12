@@ -35,6 +35,9 @@ permissions = access, login, logout
 [users]
 permissions = access, add, edit, delete, permission
 
+[groups]
+permissions = access, add, edit, delete
+
 [departments]
 permissions = access, add, edit, delete
 
