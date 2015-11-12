@@ -90,6 +90,10 @@ $pageDscription = __d('employee_directory', 'Employee Directory');
               <ul class="dropdown-menu">
                 <li><a href="<?php echo Router::url(array('controller' => 'users', 'action' => 'index'), true) ?>"><i class="glyphicon glyphicon-align-left"></i> Users Manager</a></li>
                 <li><a href="<?php echo Router::url(array('controller' => 'users', 'action' => 'add'), true) ?>"><i class="glyphicon glyphicon-plus"></i> Add a new user</a></li>
+                <li class="divider" role="separator"></li>
+                <li><a href="<?php echo Router::url(array('controller' => 'groups', 'action' => 'index'), true) ?>"><i class="glyphicon glyphicon-align-left"></i> Groups Manager</a></li>
+                <li><a href="<?php echo Router::url(array('controller' => 'groups', 'action' => 'add'), true) ?>"><i class="glyphicon glyphicon-plus"></i> Add a new group</a></li>
+                <li class="divider" role="separator"></li>
                 <li><a href="<?php echo Router::url(array('controller' => 'users', 'action' => 'permission'), true) ?>"><i class="glyphicon glyphicon-cog"></i> Permission</a></li>
               </ul>
             </li>
