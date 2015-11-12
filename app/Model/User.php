@@ -12,7 +12,7 @@ App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 class User extends AppModel
 {
 
-    public $validate = array(
+    public $validate  = array(
         'username' => array(
             'alphaNumeric' => array(
                 'rule'       => 'alphaNumeric',
@@ -53,6 +53,8 @@ class User extends AppModel
             )
         )
     );
+    public $belongsTo = array('Group');
+    public $actsAs    = array('Acl' => array('type' => 'requester'));
 
     /**
      * Customize validation rule matchPasswords
@@ -96,6 +98,22 @@ class User extends AppModel
         }
 
         return true;
+    }
+
+    public function parentNode()
+    {
+        if (!$this->id && empty($this->data)) {
+            return null;
+        }
+        if (isset($this->data['User']['group_id'])) {
+            $groupId = $this->data['User']['group_id'];
+        } else {
+            $groupId = $this->field('group_id');
+        }
+        if (!$groupId) {
+            return null;
+        }
+        return array('Group' => array('id' => $groupId));
     }
 
 }

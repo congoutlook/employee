@@ -14,7 +14,6 @@
  * @since         CakePHP(tm) v 0.10.0.1076
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 $pageDscription = __d('employee_directory', 'Employee Directory');
 ?>
 <!DOCTYPE html>
@@ -91,6 +90,7 @@ $pageDscription = __d('employee_directory', 'Employee Directory');
               <ul class="dropdown-menu">
                 <li><a href="<?php echo Router::url(array('controller' => 'users', 'action' => 'index'), true) ?>"><i class="glyphicon glyphicon-align-left"></i> Users Manager</a></li>
                 <li><a href="<?php echo Router::url(array('controller' => 'users', 'action' => 'add'), true) ?>"><i class="glyphicon glyphicon-plus"></i> Add a new user</a></li>
+                <li><a href="<?php echo Router::url(array('controller' => 'users', 'action' => 'permission'), true) ?>"><i class="glyphicon glyphicon-cog"></i> Permission</a></li>
               </ul>
             </li>
             <li><?php echo $this->Html->link('Logout', array('controller' => 'users', 'action' => 'logout')); ?></li>

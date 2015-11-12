@@ -11,11 +11,13 @@
     <h1 class="pull-left"><?php echo __('Users manager') ?></h1>   
     <div id="toolbars" class="pull-right">
             <?php
-            echo $this->Html->link(
-                sprintf('<i class="glyphicon glyphicon-plus"></i> %s', __('Add new')),
-                array('action' => 'add'),
-                array('class' => 'btn btn-default', 'escape' => false)
-            );
+            if ($allowAdd) :
+                echo $this->Html->link(
+                    sprintf('<i class="glyphicon glyphicon-plus"></i> %s', __('Add new')),
+                    array('action' => 'add'),
+                    array('class' => 'btn btn-default', 'escape' => false)
+                );
+            endif; 
             ?>
     </div>
   </div>
@@ -40,17 +42,21 @@
       <td><?php echo h($item['User']['email']); ?> </td>
       <td>
                 <?php
-                echo $this->Html->link(
-                    sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),
-                    array('action' => 'edit', $item['User']['id']),
-                    array('escape' => false)
-                );
+                if ($allowEdit) :
+                    echo $this->Html->link(
+                        sprintf('<i class="glyphicon glyphicon-pencil"></i> %s', __('Edit')),
+                        array('action' => 'edit', $item['User']['id']),
+                        array('escape' => false)
+                    );
+                endif; 
                 ?>
         &nbsp;&nbsp;
                 <?php
-                echo $this->Form->postLink(sprintf('<i class="glyphicon glyphicon-remove"></i> %s', __('Remove')), 
-                    array('action' => 'delete', $item['User']['id']),
-                    array('class'=>'', 'escape' => false, 'confirm' => 'Are you sure?'));
+                if ($allowDelete) :
+                    echo $this->Form->postLink(sprintf('<i class="glyphicon glyphicon-remove"></i> %s', __('Remove')), 
+                        array('action' => 'delete', $item['User']['id']),
+                        array('class'=>'', 'escape' => false, 'confirm' => 'Are you sure?'));
+                endif; 
                 ?>
       </td>
     </tr>

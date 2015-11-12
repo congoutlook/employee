@@ -41,11 +41,20 @@
             <?php echo $this->Form->input('password', array(
                 'placeholder' => 'if you DO NOT want to change the current password, DO NOT put anything',
             )); ?>
+    
+        <?php echo $this->Form->input('group_id', 
+                array(
+                    'label' => 'Group',
+                    'class' => 'form-control', 
+                    'options' => array(1 => 'administrator', 2 => 'manager', 3 => 'user'), 
+                    'empty' => false,
+                   )
+                );
+            ?>
 
             <?php echo $this->Form->button('<i class="glyphicon glyphicon-ok"></i> Save', array(
                 'class' => 'btn btn-default',
             )); ?>
         <?php echo $this->Form->end(null); ?>
-    </form>
   </div>
 </div>

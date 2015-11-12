@@ -12,8 +12,8 @@ App::uses('CakeEmail', 'Network/Email');
 class UsersController extends AppController
 {
 
-    public $components = array('Paginator', 'Session');
-    public $paginate = array(
+    public $components = array('Paginator', 'Session', 'Acl');
+    public $paginate   = array(
         'limit' => 5,
         'order' => array(
             'User.username' => 'asc'
@@ -73,7 +73,7 @@ class UsersController extends AppController
         // update validation password when edit user
         unset($this->User->validate['username']);
         unset($this->User->validate['email']);
-        $this->User->validate['password2']                  = $this->User->validate['password'];
+        $this->User->validate['password2']                   = $this->User->validate['password'];
         $this->User->validate['password2']['matchPasswords'] = array(
             'rule'    => 'matchPasswords',
             'message' => 'Confirm password does not match'
@@ -127,8 +127,18 @@ class UsersController extends AppController
      */
     public function index()
     {
+        // check Acl
+        if (!$this->Acl->check($this->Auth, 'users', 'access')) {
+            throw new Exception('Access denied');
+        }
+        
         $this->Paginator->settings = $this->paginate;
         $this->set('users', $this->Paginator->paginate('User'));
+        
+        
+        $this->set('allowAdd', $this->Acl->check($this->Auth, 'users', 'add'));
+        $this->set('allowEdit', $this->Acl->check($this->Auth, 'users', 'edit'));
+        $this->set('allowDelete', $this->Acl->check($this->Auth, 'users', 'delete'));
     }
 
     /**
@@ -136,6 +146,11 @@ class UsersController extends AppController
      */
     public function add()
     {
+        // check Acl
+        if (!$this->Acl->check($this->Auth, 'users', 'add')) {
+            throw new Exception('Access denied');
+        }
+        
         if ($this->request->is('post')) {
             $this->User->create();
             if ($this->User->save($this->request->data)) {
@@ -160,7 +175,7 @@ class UsersController extends AppController
                 return $this->redirect(array('action' => 'index'));
             }
             $this->Flash->error(
-                    __('The user could not be saved. Please, try again.')
+                __('The user could not be saved. Please, try again.')
             );
         }
     }
@@ -174,6 +189,11 @@ class UsersController extends AppController
     public function edit($id = null)
     {
 
+        // check Acl
+        if (!$this->Acl->check($this->Auth, 'users', 'edit')) {
+            throw new Exception('Access denied');
+        }
+        
         // validate user id
         if (!$id) {
             throw new NotFoundException(__('User not found'));
@@ -196,7 +216,7 @@ class UsersController extends AppController
 
             # check if user do not want to change password
             if (isset($this->request->data['User']['password']) &&
-                    !$this->request->data['User']['password']
+                !$this->request->data['User']['password']
             ) {
                 unset($this->request->data['User']['password']);
             }
@@ -225,6 +245,11 @@ class UsersController extends AppController
     public function delete($id = null)
     {
 
+        // check Acl
+        if (!$this->Acl->check($this->Auth, 'users', 'delete')) {
+            throw new Exception('Access denied');
+        }
+        
         # throw exception if method is get
         if ($this->request->is('get')) {
             throw new MethodNotAllowedException();
@@ -250,16 +275,63 @@ class UsersController extends AppController
         // execute delete
         if ($this->User->delete($id)) {
             $this->Flash->success(
-                    __('The user with name: %s has been deleted.', h($user['User']['username']))
+                __('The user with name: %s has been deleted.', h($user['User']['username']))
             );
         } else {
             $this->Flash->error(
-                    __('The user with name: %s could not be deleted.', h($user['User']['username']))
+                __('The user with name: %s could not be deleted.', h($user['User']['username']))
             );
         }
 
         // redirect to index
         return $this->redirect(array('action' => 'index'));
+    }
+
+    /**
+     * Manager permission
+     */
+    public function permission()
+    {
+        
+        // check Acl
+        if (!$this->Acl->check($this->Auth, 'users', 'permission')) {
+            throw new Exception('Access denied');
+        }
+
+        $this->loadModel('Permission');
+        
+        if ($this->request->is(array('post', 'put'))) {
+            
+            if (isset($this->request->data['Permissions'])) {
+                # find all permissions
+                
+                $permissions = $this->Permission->getListPermissions();
+                
+                $saveAll = array();
+
+                foreach ($this->request->data['Permissions'] as $logical => $dataPermissions) {
+                    $findId = array_search($logical, $permissions);
+
+
+                    $saveAll[] = array(
+                        'id'         => (int) $findId,
+                        'alias'      => $logical,
+                        'permission' => json_encode($dataPermissions)
+                    );
+                }
+                
+                if (count($saveAll)) {
+                    $options['validate'] = false;
+                    $this->Permission->saveAll($saveAll, $options);
+                }
+                
+                $this->redirect(array('action' => 'permission'));
+            }
+        }
+        
+        $this->set('permissions', $this->Acl->config);
+        $this->set('groups', $this->User->Group->find('all'));
+        $this->set('aclsystem', $this->Permission->getPermissions());
     }
 
 }
