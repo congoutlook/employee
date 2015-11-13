@@ -117,32 +117,6 @@ class PostsController extends AppController
     }
 
     /**
-     * View detail a post
-     * @param int $id
-     * @return void
-     * @throws NotFoundException
-     */
-    public function view($id = null)
-    {
-
-        // validate post id
-        if (!$id) {
-            throw new NotFoundException(__('Post not found'));
-        }
-
-        // find post from post id
-        $post = $this->Post->getById($id);
-        if (!$post) {
-            throw new NotFoundException(__('Post not found'));
-        }
-
-        // show form
-        if (!$this->request->data) {
-            $this->request->data = $post;
-        }
-    }
-
-    /**
      * Add a new post
      */
     public function add()
