@@ -47,3 +47,6 @@ permissions = access, add, edit, delete
 [employees]
 permissions = access, add, edit, delete
 
+[categories]
+permissions = access, add, edit, delete
+
