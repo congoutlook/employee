@@ -50,3 +50,5 @@ permissions = access, add, edit, delete
 [categories]
 permissions = access, add, edit, delete
 
+[posts]
+permissions = access, add, edit, delete
