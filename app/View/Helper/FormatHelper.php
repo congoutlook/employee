@@ -95,4 +95,25 @@ class FormatHelper extends AppHelper
         return $phoneNumber;
     }
 
+    public function postState($state, $options = array())
+    {
+        switch ($state) {
+            case 0:
+                $html = '<span class="text-danger">'.__('Unpublish').'</span>';
+                break;
+            case 1:
+                $html = '<span class="text-success">'.__('Publish').'</span>';
+                break;
+            case 2:
+                $html = '<span class="text-warning">'.__('Pending').'</span>';
+                break;
+            default:
+                $html = '<span class="">'.__('n/a').'</span>';
+        }
+        
+        $isBold = (isset($options['bold']) && $options['bold']) ? $options['bold'] : false;
+        
+        return ($isBold) ? '<strong>' . $html . '</strong>' : $html;
+    }
+
 }

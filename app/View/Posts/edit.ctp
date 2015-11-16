@@ -6,12 +6,29 @@
  * @author          Nguyen Van Cong
  */
 
-$photo = isset($this->request->data['Post']['photo']) ? $this->webroot.'/files/'.$this->request->data['Post']['photo'] : $this->webroot.'/img/nophoto.jpg';
+$photo = (isset($this->request->data['Post']['photo']) && $this->request->data['Post']['photo']) ? $this->webroot.'/files/'.$this->request->data['Post']['photo'] : $this->webroot.'/img/nophoto.jpg';
 echo $this->Html->script('/js/editors/tinymce/tinymce.min');
 ?>
 <script type="text/javascript">
     tinymce.init({
-        selector: "#PostFulltext"
+        selector: '#PostPosttext',
+        theme: "modern",
+        plugins: [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+            "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+            "save table contextmenu directionality emoticons template paste textcolor"
+        ],
+        content_css: "css/content.css",
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons | pagebreak",
+        style_formats: [
+            {title: 'Bold text', inline: 'b'},
+            {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
+            {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
+            {title: 'Example 1', inline: 'span', classes: 'example1'},
+            {title: 'Example 2', inline: 'span', classes: 'example2'},
+            {title: 'Table styles'},
+            {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
+        ]
     });
 </script>
 
@@ -28,7 +45,7 @@ echo $this->Html->script('/js/editors/tinymce/tinymce.min');
 ?>
 <div class="container">
   <div class="row page-header">
-    <h1 class="pull-left"><?php echo __('Edit a new Post') ?></h1>
+    <h1 class="pull-left"><?php echo __('Edit a Post') ?></h1>
     <div id="toolbars" class="pull-right">
             <?php echo $this->Html->link(
                 sprintf('<i class="glyphicon glyphicon-backward"></i> %s', __('Close')),
@@ -45,7 +62,7 @@ echo $this->Html->script('/js/editors/tinymce/tinymce.min');
       <div class="panel-body">
         <?php echo $this->Form->input('title', 
             array(
-                'placeholder' => 'enter an post\'s name',
+                'placeholder' => 'enter an post\'s title',
             ));
         ?>
 
@@ -78,7 +95,7 @@ echo $this->Html->script('/js/editors/tinymce/tinymce.min');
             ));
         ?>
 
-        <?php echo $this->Form->input('fulltext', 
+        <?php echo $this->Form->input('posttext', 
             array(
                 'placeholder' => 'post\'s fulltext',
                 'rows' => 20,
@@ -86,7 +103,7 @@ echo $this->Html->script('/js/editors/tinymce/tinymce.min');
         ?>
       </div>
     </div>
-    
+
     <div class="panel panel-info">
       <div class="panel-heading">Publishing</div>
       <div class="panel-body">
@@ -94,7 +111,7 @@ echo $this->Html->script('/js/editors/tinymce/tinymce.min');
             array(
                 'div' => array('class' => 'form-group'),
                 'type' => 'text',
-                'disabled' => true,
+                'readonly' => true,
             ));
         ?>
 
@@ -156,6 +173,19 @@ echo $this->Html->script('/js/editors/tinymce/tinymce.min');
                   'rows' => 1,
               ));
         ?>
+      </div>
+    </div>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">Data Reference</div>
+      <div class="panel-body">
+        <?php echo $this->Form->input('refid', 
+              array(
+                  'div' => array('class' => 'form-group'),
+                  'label' => 'Data Reference',
+                  'placeholder' => 'Data Reference',
+              ));
+          ?>
       </div>
     </div>
 

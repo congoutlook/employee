@@ -8,6 +8,7 @@
  */
 App::uses('AppController', 'Controller');
 App::uses('File', 'Utility');
+App::uses('CakeTime', 'Utility');
 
 class PostsController extends AppController
 {
@@ -15,7 +16,7 @@ class PostsController extends AppController
     const DIRECTORY_UPLOAD = 'files';
 
     public $components = array('Paginator', 'RequestHandler');
-    public $helpers    = array('Js' => 'Jquery', 'Format');
+    public $helpers    = array('Js' => 'Jquery', 'Format', 'Time');
     public $paginate   = array(
         'limit' => 5,
         'order' => array(
@@ -63,9 +64,11 @@ class PostsController extends AppController
      */
     public function index()
     {
+        $this->loadModel('Category');
+
         // get params filter
         $conditions        = array();
-        $whiteFieldsFilter = array('category_id');
+        $whiteFieldsFilter = array('category_id', 'state');
 
         if (($this->request->is(array('post', 'put'))) && isset($this->data['Filter'])) {
             $filterUrl['controller'] = $this->request->params['controller'];
@@ -74,7 +77,9 @@ class PostsController extends AppController
 
             // build filter url
             foreach ($this->data['Filter'] as $name => $value) {
-                if ($value) {
+                if (is_numeric($value)) {
+                    $filterUrl[$name] = urlencode($value);
+                } elseif ($value) {
                     $filterUrl[$name] = urlencode($value);
                 }
             }
@@ -99,21 +104,32 @@ class PostsController extends AppController
                     $this->request->data['Filter'][$paramName] = $value;
                 }
             }
+
+            // check multi categories
+            if (isset($this->request->data['Filter']['category_id']) && $this->request->data['Filter']['category_id']) {
+                $children = $this->Category->children($this->request->data['Filter']['category_id'], false, 'id');
+                $children = Hash::extract($children, '{n}.Category.id');
+                if (!empty($children)) {
+                    unset($conditions['Post.category_id']);
+                    $children                       = array_merge(array($this->request->data['Filter']['category_id']), $children);
+                    $conditions['Post.category_id'] = $children;
+                }
+            }
         }
 
-        // build data filter form, get department dependent
-        $this->loadModel('Category');
-        $this->set('departments', $this->Category->generateTreeList(null, null, null, '|____'));
-
+        // get items
         $this->paginate['conditions'] = $conditions;
-
-        $this->Paginator->settings = $this->paginate;
+        $this->Paginator->settings    = $this->paginate;
         $this->set('items', $this->Paginator->paginate('Post'));
 
         // render view ajax
         if ($this->request->is("ajax")) {
             $this->render('indexajax');
         }
+
+        // build data filter form, get department dependent
+        $this->set('categories', $this->Category->generateTreeList(null, null, null, '|____'));
+        $this->set('states', array(0 => 'Unpublish', 1 => 'Publish', 2 => 'Pending'));
     }
 
     /**
@@ -153,6 +169,9 @@ class PostsController extends AppController
                         $data['Post']['photo'] = '';
                     }
                 }
+
+                // auto field
+                $data['Post']['created'] = CakeTime::dayAsSql(time(), 'Asia/Jakarta');
 
                 # execute save without validate. return page index if success.
                 $this->Post->create();
@@ -302,6 +321,72 @@ class PostsController extends AppController
         }
 
         return $this->redirect(array('action' => 'index'));
+    }
+
+    public function preview($id)
+    {
+        // validate post id
+        if (!$id) {
+            throw new NotFoundException(__('Post not found'));
+        }
+
+        // find post from post id
+        unset($this->Post->virtualFields);
+        $post = $this->Post->getById($id);
+        if (!$post) {
+            throw new NotFoundException(__('Post not found'));
+        }
+
+        // show form
+        if (!$this->request->data) {
+            $this->request->data = $post;
+        }
+    }
+
+    public function blogs($id)
+    {
+
+        // validate id
+        if (!$id) {
+            throw new NotFoundException();
+        }
+
+        $this->loadModel('Category');
+
+        // validate row data
+        $category = $this->Category->getById($id);
+        if (!$category) {
+            throw new NotFoundException();
+        }
+
+        $conditions = array();
+        $conditions['Post.category_id'] = $id;
+
+        // check multi categories
+        $children = $this->Category->children($id, false, 'id');
+        $children = Hash::extract($children, '{n}.Category.id');
+        
+        if (!empty($children) && is_array($children) && count($children)) {
+            unset($conditions['Post.category_id']);
+            $children                       = array_merge(array($id), $children);
+            $conditions['Post.category_id'] = $children;
+        }
+        
+        // publish
+        $conditions['Post.state'] = 1;
+        $fields = array('Post.id', 'Post.category_id', 'Post.title', 'Post.alias', 'Post.introtext', 'Post.publish_up', 'Post.publish_down', 'Post.user_id', 'Post.author', 'Post.photo', 'Category.id', 'Category.name');
+
+        // get items
+        $this->paginate['conditions'] = $conditions;
+        $this->paginate['fields']     = $fields;
+        $this->Paginator->settings    = $this->paginate;
+        $this->set('items', $this->Paginator->paginate('Post'));
+        $this->set('category', $category);
+        
+        // render view ajax
+        if ($this->request->is("ajax")) {
+            $this->render('blogsajax');
+        }
     }
 
 }

@@ -38,11 +38,11 @@ $this->Paginator->options(
     <td><?php echo $item['Post']['id']; ?> </td>
     <td>
       <img class="img-responsive app-photo-list" src="<?php echo $path ?>" alt="<?php echo $item['Post']['title']; ?>'s photo" />
-          <?php echo $item['Post']['title']; ?>
+            <?php echo $item['Post']['title']; ?>
     </td>
     <td><?php echo ($item['Category']['name']) ? $item['Category']['name'] : '<span class="text-muted">n/a</span>' ?> </td>
-    <td><?php echo $item['Post']['created']; ?> </td>
-    <td><?php echo $item['Post']['publish_up']; ?> </td>
+    <td><?php echo $this->Time->format($item['Post']['created'], '%d-%m-%Y %H:%M'); ?> </td>
+    <td><?php echo $this->Format->postState($item['Post']['state'], array('bold' => true)) ?> </td>
     <td>
         <?php if (AuthComponent::user('id')) : ?>
             <?php

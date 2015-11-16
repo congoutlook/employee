@@ -12,6 +12,10 @@ App::uses('Category', 'Model');
 class Post extends AppModel
 {
 
+    public $virtualFields = array(
+        'posttext' => 'CONCAT(Post.introtext, "<hr />", Post.fulltext)'
+    );
+
     public $validate  = array(
         'title'         => array(
             'required' => array(
@@ -53,6 +57,14 @@ class Post extends AppModel
         if (!$this->data[$this->alias]['alias']) {
             $this->data[$this->alias]['alias'] = Inflector::slug($this->data[$this->alias]['title'], '-');
         }
+        
+        $textParts = explode('<hr />', $this->data[$this->alias]['posttext']);
+        
+        if (count($textParts) == 2) {
+            $this->data[$this->alias]['introtext'] = trim($textParts[0]);
+            $this->data[$this->alias]['fulltext'] = trim($textParts[1]);
+        }
+        
         
         return true;
     }

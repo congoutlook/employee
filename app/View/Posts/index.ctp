@@ -53,10 +53,11 @@ $this->Html->scriptBlock(
             'class' => 'form-inline',
             'url' => array('controller' => 'posts', 'action' => 'index'),
         )) . PHP_EOL;
-        echo $this->Form->input('search', array('placeholder' => 'Search...')) . PHP_EOL;        
-        echo $this->Form->input('category_id', array('class' => 'form-control', 'options' => $departments, 'empty' => '- - Category - -', 'default' => '')) . PHP_EOL;        
-        echo $this->Form->button('<i class="glyphicon glyphicon-search"></i> Filter', array('class' => 'btn btn-info')) . PHP_EOL;        
-        echo $this->Form->button('<i class="glyphicon glyphicon-erase"></i> Clear', array('class' => 'btn btn-default btn-clear', 'type' => 'button')) . PHP_EOL;        
+        echo $this->Form->input('search', array('placeholder' => 'Search...')) . PHP_EOL;
+        echo $this->Form->input('category_id', array('class' => 'form-control', 'empty' => '- - Category - -', 'default' => '')) . PHP_EOL;
+        echo $this->Form->input('states', array('class' => 'form-control', 'empty' => '- - State - -', 'default' => '')) . PHP_EOL;
+        echo $this->Form->button('<i class="glyphicon glyphicon-search"></i> Filter', array('class' => 'btn btn-info')) . PHP_EOL;
+        echo $this->Form->button('<i class="glyphicon glyphicon-erase"></i> Clear', array('class' => 'btn btn-default btn-clear', 'type' => 'button')) . PHP_EOL;
         echo $this->Form->end();
         ?>
     </div>
@@ -91,8 +92,8 @@ $this->Html->scriptBlock(
             <?php echo $item['Post']['title']; ?>
         </td>
         <td><?php echo ($item['Category']['name']) ? $item['Category']['name'] : '<span class="text-muted">n/a</span>' ?> </td>
-        <td><?php echo $item['Post']['created']; ?> </td>
-        <td><?php echo $item['Post']['publish_up']; ?> </td>
+        <td><?php echo $this->Time->format($item['Post']['created'], '%d-%m-%Y %H:%M'); ?> </td>
+        <td><?php echo $this->Format->postState($item['Post']['state'], array('bold' => true)) ?> </td>
         <td>
         <?php if (AuthComponent::user('id')) : ?>
             <?php
