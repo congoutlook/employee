@@ -55,6 +55,14 @@
                         array('class'=>'', 'escape' => false, 'confirm' => 'Are you sure?'));
                 endif; 
                 ?>
+        &nbsp;&nbsp;
+                <?php
+                echo $this->Html->link(
+                    sprintf('<i class="glyphicon glyphicon-eye-open"></i> %s', __('View')),
+                    array('controller' => 'posts', 'action' => 'blogs', $id),
+                    array('escape' => false)
+                );
+                ?>
       </td>
     </tr>
         <?php endforeach; ?>
