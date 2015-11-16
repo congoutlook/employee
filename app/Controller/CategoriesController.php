@@ -140,10 +140,20 @@ class CategoriesController extends AppController
             throw new NotFoundException();
         }
 
+        // check count children categories
         $childCountDirect = $this->Category->childCount($id, true);
         if ($childCountDirect > 0) {
             $this->Flash->error(
                 __('The category with name: %s could not be deleted. This category still contains other categories', h($category['Category']['name']))
+            );
+            return $this->redirect(array('action' => 'index'));
+        }
+        
+        // check count post
+        $countPost = $this->Category->countPostInCategory($id);
+        if ($countPost > 0) {
+            $this->Flash->error(
+                __('The category with name: %s could not be deleted. This category still contains posts', h($category['Category']['name']))
             );
             return $this->redirect(array('action' => 'index'));
         }
